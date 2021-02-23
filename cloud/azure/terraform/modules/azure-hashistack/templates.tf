@@ -23,7 +23,7 @@ data "template_file" "user_data_client" {
 }
 
 data "template_file" "nomad_autoscaler_jobspec" {
-  template = file("${path.module}/templates/azure_autoscaler.nomad")
+  template = file("${path.module}/templates/azure_autoscaler.nomad.tpl")
 
   vars = {
     nomad_autoscaler_image = var.nomad_autoscaler_image

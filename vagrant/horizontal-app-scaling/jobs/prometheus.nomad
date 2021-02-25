@@ -4,28 +4,32 @@ job "prometheus" {
   group "prometheus" {
     count = 1
 
+    network {
+      port "prometheus_ui" {}
+    }
+
     task "prometheus" {
       driver = "docker"
 
       config {
         image = "prom/prometheus:v2.25.0"
+        ports = ["prometheus_ui"]
+
+        # Use `host` network so we can communicate with the Nomad and Consul
+        # agents running in the host and scrape their metrics.
+        network_mode = "host"
 
         args = [
           "--config.file=/etc/prometheus/config/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
+          "--web.listen-address=0.0.0.0:${NOMAD_PORT_prometheus_ui}",
           "--web.console.libraries=/usr/share/prometheus/console_libraries",
           "--web.console.templates=/usr/share/prometheus/consoles",
         ]
 
-        network_mode = "host"
-
         volumes = [
           "local/config:/etc/prometheus/config",
         ]
-
-        port_map {
-          prometheus_ui = 9090
-        }
       }
 
       template {
@@ -70,14 +74,6 @@ EOH
       resources {
         cpu    = 100
         memory = 256
-
-        network {
-          mbits = 10
-
-          port "prometheus_ui" {
-            static = 9090
-          }
-        }
       }
 
       service {

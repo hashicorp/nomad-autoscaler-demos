@@ -4,15 +4,21 @@ job "prometheus" {
   group "prometheus" {
     count = 1
 
+    network {
+      port "prometheus_ui" {}
+    }
+
     task "prometheus" {
       driver = "docker"
 
       config {
-        image = "prom/prometheus:v2.18.1"
+        image = "prom/prometheus:v2.25.0"
+        ports = ["prometheus_ui"]
 
         args = [
           "--config.file=/etc/prometheus/config/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
+          "--web.listen-address=0.0.0.0:${NOMAD_PORT_prometheus_ui}",
           "--web.console.libraries=/usr/share/prometheus/console_libraries",
           "--web.console.templates=/usr/share/prometheus/consoles",
         ]
@@ -20,10 +26,6 @@ job "prometheus" {
         volumes = [
           "local/config:/etc/prometheus/config",
         ]
-
-        port_map {
-          prometheus_ui = 9090
-        }
       }
 
       template {
@@ -34,7 +36,6 @@ global:
   evaluation_interval: 1s
 
 scrape_configs:
-
   - job_name: nomad
     scrape_interval: 10s
     metrics_path: /v1/metrics
@@ -63,12 +64,6 @@ EOH
       resources {
         cpu    = 100
         memory = 256
-
-        network {
-          mbits = 10
-
-          port "prometheus_ui" {}
-        }
       }
 
       service {

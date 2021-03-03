@@ -4,6 +4,10 @@ job "autoscaler" {
   group "autoscaler" {
     count = 1
 
+    network {
+      port "http" {}
+    }
+
     task "autoscaler" {
       driver = "docker"
 
@@ -17,11 +21,13 @@ job "autoscaler" {
           "$${NOMAD_TASK_DIR}/config.hcl",
           "-http-bind-address",
           "0.0.0.0",
-          "-log-level",
-          "debug",
+          "-http-bind-port",
+          "$${NOMAD_PORT_http}",
           "-policy-dir",
           "$${NOMAD_TASK_DIR}/policies/",
         ]
+
+        ports = ["http"]
       }
 
       template {
@@ -81,11 +87,11 @@ scaling "cluster_policy" {
 
     target "gce-mig" {
       project             = "${project}"
-      %{ if mig_type == "regional" }
+      %{if mig_type == "regional"}
       region              = "${region}"
-      %{ else }
+      %{else}
       zone                = "${zone}"
-      %{ endif }
+      %{endif}
       mig_name            = "${mig_name}"
       node_class          = "hashistack"
       node_drain_deadline = "5m"
@@ -100,11 +106,6 @@ EOF
       resources {
         cpu    = 50
         memory = 128
-
-        network {
-          mbits = 10
-          port "http" {}
-        }
       }
 
       service {

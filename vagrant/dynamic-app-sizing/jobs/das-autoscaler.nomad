@@ -5,9 +5,7 @@ job "das-autoscaler" {
     count = 1
 
     network {
-      port "http" {
-        to = 8080
-      }
+      port "http" {}
     }
 
     task "autoscaler" {
@@ -24,6 +22,8 @@ job "das-autoscaler" {
           "local/autoscaler.hcl",
           "-http-bind-address",
           "0.0.0.0",
+          "-http-bind-port",
+          "${NOMAD_PORT_http}",
         ]
       }
 
@@ -31,10 +31,6 @@ job "das-autoscaler" {
         destination = "local/autoscaler.hcl"
 
         data = <<EOH
-// Set the log level so we can see some more interesting output at the expense
-// of chattiness.
-log_level = "debug"
-
 // Set the address of the Nomad agent. This can be omitted and in this example
 // is set to the default for clarity.
 nomad {

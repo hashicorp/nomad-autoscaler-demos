@@ -1,10 +1,15 @@
 job "autoscaler" {
   type = "service"
-  
+
   datacenters = ["dc1"]
 
   group "autoscaler" {
     count = 1
+
+    network {
+      port "http" {}
+      port "promtail" {}
+    }
 
     task "autoscaler" {
       driver = "docker"
@@ -12,6 +17,7 @@ job "autoscaler" {
       config {
         image   = "hashicorp/nomad-autoscaler:0.3.0"
         command = "nomad-autoscaler"
+        ports   = ["http"]
 
         args = [
           "agent",
@@ -19,11 +25,9 @@ job "autoscaler" {
           "${NOMAD_TASK_DIR}/config.hcl",
           "-http-bind-address",
           "0.0.0.0",
+          "-http-bind-port",
+          "${NOMAD_PORT_http}",
         ]
-
-        port_map {
-          http = 8080
-        }
       }
 
       ## Alternatively, you could also run the Autoscaler using the exec driver
@@ -35,7 +39,7 @@ job "autoscaler" {
       # }
       #
       # artifact {
-      #   source      = "https://releases.hashicorp.com/nomad-autoscaler/0.2.0/nomad-autoscaler_0.2.0_linux_amd64.zip"
+      #   source      = "https://releases.hashicorp.com/nomad-autoscaler/0.2.1/nomad-autoscaler_0.2.1_linux_amd64.zip"
       #   destination = "/usr/local/bin"
       # }
 
@@ -68,11 +72,6 @@ strategy "target-value" {
       resources {
         cpu    = 50
         memory = 128
-
-        network {
-          mbits = 10
-          port "http" {}
-        }
       }
 
       service {
@@ -82,8 +81,8 @@ strategy "target-value" {
         check {
           type     = "http"
           path     = "/v1/health"
-          interval = "5s"
-          timeout  = "2s"
+          interval = "3s"
+          timeout  = "1s"
         }
       }
     }
@@ -98,21 +97,18 @@ strategy "target-value" {
 
       config {
         image = "grafana/promtail:1.5.0"
+        ports = ["promtail"]
 
         args = [
           "-config.file",
           "local/promtail.yaml",
         ]
-
-        port_map {
-          promtail_port = 9080
-        }
       }
 
       template {
         data = <<EOH
 server:
-  http_listen_port: 9080
+  http_listen_port: {{ env "NOMAD_PORT_promtail" }}
   grpc_listen_port: 0
 
 positions:
@@ -152,16 +148,11 @@ EOH
       resources {
         cpu    = 50
         memory = 32
-
-        network {
-          mbits = 1
-          port  "promtail_port"{}
-        }
       }
 
       service {
         name = "promtail"
-        port = "promtail_port"
+        port = "promtail"
 
         check {
           type     = "http"

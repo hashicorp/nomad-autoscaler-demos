@@ -15,7 +15,7 @@ You can test the integrity of the cluster by running:
 
 The Nomad UI can be accessed at ${module.hashistack_cluster.nomad_addr}/ui
 The Consul UI can be accessed at ${module.hashistack_cluster.consul_addr}/ui
-Grafana dashbaord can be accessed at http://${module.hashistack_cluster.clients_lb_public_ip}:3000/d/AQphTqmMk/demo?orgId=1&refresh=5s
+Grafana dashboard can be accessed at http://${module.hashistack_cluster.clients_lb_public_ip}:3000/d/AQphTqmMk/demo?orgId=1&refresh=5s
 Traefik can be accessed at http://${module.hashistack_cluster.clients_lb_public_ip}:8081
 Prometheus can be accessed at http://${module.hashistack_cluster.clients_lb_public_ip}:9090
 Webapp can be accessed at http://${module.hashistack_cluster.clients_lb_public_ip}:80

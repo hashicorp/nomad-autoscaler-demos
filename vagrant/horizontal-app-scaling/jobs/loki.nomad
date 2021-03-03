@@ -4,11 +4,16 @@ job "loki" {
   group "loki" {
     count = 1
 
+    network {
+      port "loki" {}
+    }
+
     task "loki" {
       driver = "docker"
 
       config {
         image = "grafana/loki:2.1.0"
+        ports = ["loki"]
 
         args = [
           "--config.file=/etc/loki/config/loki.yml",
@@ -17,10 +22,6 @@ job "loki" {
         volumes = [
           "local/config:/etc/loki/config",
         ]
-
-        port_map {
-          loki_port = 3100
-        }
       }
 
       template {
@@ -29,7 +30,7 @@ job "loki" {
 auth_enabled: false
 
 server:
-  http_listen_port: 3100
+  http_listen_port: {{ env "NOMAD_PORT_loki" }}
 
 ingester:
   lifecycler:
@@ -73,17 +74,11 @@ EOH
       resources {
         cpu    = 100
         memory = 256
-
-        network {
-          mbits = 10
-
-          port "loki_port" {}
-        }
       }
 
       service {
         name = "loki"
-        port = "loki_port"
+        port = "loki"
 
         check {
           type     = "http"

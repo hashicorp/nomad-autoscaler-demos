@@ -6,11 +6,33 @@ job "traefik" {
   group "traefik" {
     count = 1
 
+    network {
+      port "api" {
+        static = 8081
+      }
+
+      port "grafana" {
+        static = 3000
+      }
+
+      port "prometheus" {
+        static = 9090
+      }
+
+      port "webapp" {
+        static = 80
+      }
+    }
+
     task "traefik" {
       driver = "docker"
 
       config {
-        image        = "traefik:v2.2"
+        image = "traefik:v2.2"
+        ports = ["api", "grafana", "prometheus", "webapp"]
+
+        # Use `host` network so we can communicate with the Consul agent
+        # running in the host to access the service catalog.
         network_mode = "host"
 
         volumes = [
@@ -22,16 +44,16 @@ job "traefik" {
         data = <<EOF
 [entryPoints]
   [entryPoints.traefik]
-    address = ":8081"
+    address = ":{{ env "NOMAD_PORT_api" }}"
 
   [entryPoints.grafana]
-    address = ":3000"
+    address = ":{{ env "NOMAD_PORT_grafana" }}"
 
   [entryPoints.prometheus]
-    address = ":9090"
+    address = ":{{ env "NOMAD_PORT_prometheus" }}"
 
   [entryPoints.webapp]
-    address = ":80"
+    address = ":{{ env "NOMAD_PORT_webapp" }}"
 
 [api]
   dashboard = true
@@ -57,23 +79,6 @@ EOF
       resources {
         cpu    = 200
         memory = 256
-
-        network {
-          mbits = 10
-
-          port "api" {
-            static = 8081
-          }
-          port "grafana" {
-            static = 3000
-          }
-          port "prometheus" {
-            static = 9090
-          }
-          port "webapp" {
-            static = 80
-          }
-        }
       }
 
       service {
@@ -89,6 +94,7 @@ EOF
           timeout  = "2s"
         }
       }
+
       service {
         name         = "traefik-webapp"
         port         = "webapp"
@@ -102,6 +108,7 @@ EOF
           timeout  = "2s"
         }
       }
+
       service {
         name         = "traefik-grafana"
         port         = "grafana"
@@ -115,6 +122,7 @@ EOF
           timeout  = "2s"
         }
       }
+
       service {
         name         = "traefik-prometheus"
         port         = "prometheus"

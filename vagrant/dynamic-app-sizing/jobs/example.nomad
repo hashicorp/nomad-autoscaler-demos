@@ -5,22 +5,7 @@ job "example" {
     count = 1
 
     network {
-      port "lb" {
-        to = 6379
-      }
-    }
-
-    service {
-      name         = "redis-lb"
-      port         = "lb"
-      address_mode = "host"
-
-      check {
-        type     = "tcp"
-        port     = "lb"
-        interval = "10s"
-        timeout  = "2s"
-      }
+      port "lb" {}
     }
 
     task "nginx" {
@@ -62,7 +47,7 @@ EOF
         data          = <<EOF
 stream {
   server {
-    listen 6379;
+    listen {{ env "NOMAD_PORT_lb" }};
     proxy_pass backend;
   }
 
@@ -88,6 +73,7 @@ EOF
         policy {
           cooldown            = "1m"
           evaluation_interval = "1m"
+
           check "95pct" {
             strategy "app-sizing-percentile" {
               percentile = "95"
@@ -100,12 +86,25 @@ EOF
         policy {
           cooldown            = "1m"
           evaluation_interval = "1m"
+
           check "max" {
             strategy "app-sizing-max" {}
           }
         }
       }
+    }
 
+    service {
+      name         = "redis-lb"
+      port         = "lb"
+      address_mode = "host"
+
+      check {
+        type     = "tcp"
+        port     = "lb"
+        interval = "10s"
+        timeout  = "2s"
+      }
     }
   }
 
@@ -115,19 +114,6 @@ EOF
     network {
       port "db" {
         to = 6379
-      }
-    }
-
-    service {
-      name         = "redis"
-      port         = "db"
-      address_mode = "host"
-
-      check {
-        type     = "tcp"
-        port     = "db"
-        interval = "10s"
-        timeout  = "2s"
       }
     }
 
@@ -165,6 +151,19 @@ EOF
           check "max" {
             strategy "app-sizing-max" {}
           }
+        }
+      }
+
+      service {
+        name         = "redis"
+        port         = "db"
+        address_mode = "host"
+
+        check {
+          type     = "tcp"
+          port     = "db"
+          interval = "10s"
+          timeout  = "2s"
         }
       }
     }

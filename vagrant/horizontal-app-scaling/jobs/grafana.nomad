@@ -4,6 +4,10 @@ job "grafana" {
   group "grafana" {
     count = 1
 
+    network {
+      port "grafana_ui" {}
+    }
+
     volume "grafana" {
       type   = "host"
       source = "grafana"
@@ -14,10 +18,7 @@ job "grafana" {
 
       config {
         image = "grafana/grafana:7.4.2"
-
-        port_map {
-          grafana_ui = 3000
-        }
+        ports = ["grafana_ui"]
 
         volumes = [
           "local/datasources:/etc/grafana/provisioning/datasources",
@@ -29,6 +30,7 @@ job "grafana" {
       env {
         GF_AUTH_ANONYMOUS_ENABLED  = "true"
         GF_AUTH_ANONYMOUS_ORG_ROLE = "Editor"
+        GF_SERVER_HTTP_PORT        = "${NOMAD_PORT_grafana_ui}"
       }
 
       template {
@@ -90,13 +92,17 @@ EOH
       resources {
         cpu    = 100
         memory = 64
+      }
 
-        network {
-          mbits = 10
+      service {
+        name = "grafana"
+        port = "grafana_ui"
 
-          port "grafana_ui" {
-            static = 3000
-          }
+        check {
+          type     = "http"
+          path     = "/api/health"
+          interval = "10s"
+          timeout  = "2s"
         }
       }
     }

@@ -4,6 +4,10 @@ job "autoscaler" {
   group "autoscaler" {
     count = 1
 
+    network {
+      port "http" {}
+    }
+
     task "autoscaler" {
       driver = "docker"
 
@@ -17,15 +21,13 @@ job "autoscaler" {
           "$${NOMAD_TASK_DIR}/config.hcl",
           "-http-bind-address",
           "0.0.0.0",
-          "-log-level",
-          "debug",
+          "-http-bind-port",
+          "$${NOMAD_PORT_http}",
           "-policy-dir",
           "$${NOMAD_TASK_DIR}/policies/",
         ]
 
-        port_map {
-          http = 8080
-        }
+        ports = ["http"]
       }
 
       template {
@@ -83,7 +85,7 @@ scaling "cluster_policy" {
 
     check "cpu_allocated_percentage" {
       source = "prometheus"
-      query  = "scalar(sum(nomad_client_allocated_cpu{node_class=\"hashistack\"}*100/(nomad_client_unallocated_cpu{node_class=\"hashistack\"}+nomad_client_allocated_cpu{node_class=\"hashistack\"}))/count(nomad_client_allocated_cpu{node_class=\"hashistack\"}))"
+      query  = "sum(nomad_client_allocated_cpu{node_class=\"hashistack\"}*100/(nomad_client_unallocated_cpu{node_class=\"hashistack\"}+nomad_client_allocated_cpu{node_class=\"hashistack\"}))/count(nomad_client_allocated_cpu{node_class=\"hashistack\"})"
 
       strategy "target-value" {
         target = 70
@@ -101,7 +103,7 @@ scaling "cluster_policy" {
 
     check "mem_allocated_percentage" {
       source = "prometheus"
-      query  = "scalar(sum(nomad_client_allocated_memory{node_class=\"hashistack\"}*100/(nomad_client_unallocated_memory{node_class=\"hashistack\"}+nomad_client_allocated_memory{node_class=\"hashistack\"}))/count(nomad_client_allocated_memory{node_class=\"hashistack\"}))"
+      query  = "sum(nomad_client_allocated_memory{node_class=\"hashistack\"}*100/(nomad_client_unallocated_memory{node_class=\"hashistack\"}+nomad_client_allocated_memory{node_class=\"hashistack\"}))/count(nomad_client_allocated_memory{node_class=\"hashistack\"})"
 
       strategy "target-value" {
         target = 70
@@ -133,11 +135,6 @@ EOF
       resources {
         cpu    = 50
         memory = 128
-
-        network {
-          mbits = 10
-          port "http" {}
-        }
       }
 
       service {

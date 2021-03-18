@@ -78,6 +78,7 @@ data "aws_iam_policy_document" "nomad_client" {
       "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:DetachInstances",
       "autoscaling:UpdateAutoScalingGroup",
+      "autoscaling:TerminateInstanceInAutoScalingGroup",
       "ec2:TerminateInstances",
       "ec2:DescribeInstances",
       "ec2:DescribeInstanceStatus",

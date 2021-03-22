@@ -9,12 +9,10 @@ job "das-autoscaler" {
     }
 
     task "autoscaler" {
-      driver = "docker"
+      driver = "exec"
 
       config {
-        image   = "hashicorp/nomad-autoscaler-enterprise:0.3.0"
-        command = "nomad-autoscaler"
-        ports   = ["http"]
+        command = "local/nomad-autoscaler"
 
         args = [
           "agent",
@@ -25,6 +23,11 @@ job "das-autoscaler" {
           "-http-bind-port",
           "${NOMAD_PORT_http}",
         ]
+      }
+
+      artifact {
+        source      = "https://github.com/hashicorp/nomad-autoscaler/releases/download/nightly/nomad-autoscaler_0.3.1-dev+ent_linux_amd64.zip"
+        destination = "local"
       }
 
       template {
@@ -64,11 +67,19 @@ apm "prometheus" {
   }
 }
 
-policy_eval {
+dynamic_application_sizing {
 
   // Lower the evaluate interval so we can reproduce recommendations after only
   // 5 minutes, rather than having to wait for 24hrs as is the default.
   evaluate_after = "5m"
+
+  // Customize the metric names and labels.
+  cpu_metric     = "nomad_client_allocs_cpu_total_ticks_value"
+  memory_metric  = "nomad_client_allocs_memory_usage_value"
+  job_label      = "job"
+}
+
+policy_eval {
 
   // Disable the horizontal application and horizontal cluster workers. This
   // helps reduce log noise during the demo.

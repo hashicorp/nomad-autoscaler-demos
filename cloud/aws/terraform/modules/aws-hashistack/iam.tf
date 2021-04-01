@@ -76,12 +76,9 @@ data "aws_iam_policy_document" "nomad_client" {
       "autoscaling:CreateOrUpdateTags",
       "autoscaling:DescribeScalingActivities",
       "autoscaling:DescribeAutoScalingGroups",
-      "autoscaling:DetachInstances",
       "autoscaling:UpdateAutoScalingGroup",
-      "ec2:TerminateInstances",
+      "autoscaling:TerminateInstanceInAutoScalingGroup",
       "ec2:DescribeInstances",
-      "ec2:DescribeInstanceStatus",
-      "ec2:DescribeTags",
     ]
 
     resources = ["*"]

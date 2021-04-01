@@ -64,11 +64,16 @@ apm "prometheus" {
   }
 }
 
-policy_eval {
+// This block contains configuration options specific to the Dynamic Application
+// Sizing enterprise feature.
+dynamic_application_sizing {
 
   // Lower the evaluate interval so we can reproduce recommendations after only
   // 5 minutes, rather than having to wait for 24hrs as is the default.
   evaluate_after = "5m"
+}
+
+policy_eval {
 
   // Disable the horizontal application and horizontal cluster workers. This
   // helps reduce log noise during the demo.

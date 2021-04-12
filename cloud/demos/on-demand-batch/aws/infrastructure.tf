@@ -48,6 +48,7 @@ module "servers" {
   key_name           = var.key_name
   owner_name         = var.owner_name
   owner_email        = var.owner_email
+  availability_zones = var.availability_zones
   security_group_ids = [module.network.agents_sg_id]
 }
 

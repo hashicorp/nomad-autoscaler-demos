@@ -20,7 +20,8 @@ variable "owner_email" {
 }
 
 variable "server_ids" {
-  type = list(string)
+  type        = list(string)
+  description = "List of EC2 instances running Nomad servers."
 }
 
 # Optional variables.

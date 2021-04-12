@@ -19,7 +19,7 @@ locals {
     },
   ]
 
-  allowed_ips = length(var.allowed_ips) == 0 ? ["${chomp(data.http.my_ip.body)}/32"] : var.allowed_ips
+  allowed_ips = length(var.allowed_ips) == 0 ? ["${chomp(data.http.my_ip.body)}/32"] : formatlist("%s/32", var.allowed_ips)
 }
 
 data "http" "my_ip" {

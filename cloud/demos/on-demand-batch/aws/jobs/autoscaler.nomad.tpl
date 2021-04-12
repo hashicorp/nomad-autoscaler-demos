@@ -87,7 +87,7 @@ scaling "batch" {
     }
   }
 }
-        EOF
+EOF
 
         change_mode   = "signal"
         change_signal = "SIGHUP"

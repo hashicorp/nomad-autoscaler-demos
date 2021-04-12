@@ -1,16 +1,21 @@
 locals {
-  services = [
+  client_load_balancers = [
     {
-      port     = 8081
-      protocol = "TCP"
-    },
-    {
-      port     = 9090
-      protocol = "TCP"
-    },
-    {
-      port     = 3000
-      protocol = "TCP"
+      name = "platform"
+      listeners = [
+        {
+          port     = 8081
+          protocol = "TCP"
+        },
+        {
+          port     = 9090
+          protocol = "TCP"
+        },
+        {
+          port     = 3000
+          protocol = "TCP"
+        },
+      ],
     },
   ]
 
@@ -57,8 +62,8 @@ module "clients_platform" {
   key_name            = var.key_name
   owner_name          = var.owner_name
   owner_email         = var.owner_email
-  security_group_ids  = [module.network.agents_sg_id, module.network.services_sg_ids[0]]
-  load_balancer_names = [module.network.services_lb_names[0]]
+  security_group_ids  = [module.network.agents_sg_id, module.network.clients_sg_ids[0]]
+  load_balancer_names = [module.network.clients_lb_names[0]]
 }
 
 module "clients_batch" {
@@ -80,11 +85,11 @@ module "network" {
   source     = "../../../infrastructure/aws/terraform/modules/aws-nomad-network"
   depends_on = [null_resource.preflight_check]
 
-  stack_name         = random_pet.stack_name.id
-  availability_zones = var.availability_zones
-  owner_name         = var.owner_name
-  owner_email        = var.owner_email
-  server_ids         = module.servers.ids
-  allowed_ips        = local.allowed_ips
-  services           = [local.services]
+  stack_name            = random_pet.stack_name.id
+  availability_zones    = var.availability_zones
+  owner_name            = var.owner_name
+  owner_email           = var.owner_email
+  server_ids            = module.servers.ids
+  allowed_ips           = local.allowed_ips
+  client_load_balancers = local.client_load_balancers
 }

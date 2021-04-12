@@ -28,16 +28,16 @@ resource "aws_elb" "servers" {
   }
 }
 
-resource "aws_elb" "services" {
-  count = length(var.services)
+resource "aws_elb" "clients" {
+  count = length(var.client_load_balancers)
 
-  name               = "${var.stack_name}-services-${count.index + 1}"
+  name               = "${var.stack_name}-${var.client_load_balancers[count.index].name}-clients"
   availability_zones = var.availability_zones
-  security_groups    = [aws_security_group.services[count.index].id]
+  security_groups    = [aws_security_group.clients[count.index].id]
   internal           = false
 
   dynamic "listener" {
-    for_each = var.services[count.index]
+    for_each = var.client_load_balancers[count.index].listeners
 
     content {
       instance_port     = listener.value["port"]
@@ -52,7 +52,7 @@ resource "aws_elb" "services" {
     unhealthy_threshold = 2
     interval            = 30
     timeout             = 3
-    target              = "${var.services[count.index][0]["protocol"]}:${var.services[count.index][0]["port"]}"
+    target              = "${var.client_load_balancers[count.index].listeners[0]["protocol"]}:${var.client_load_balancers[count.index].listeners[0]["port"]}"
   }
 
   tags = {

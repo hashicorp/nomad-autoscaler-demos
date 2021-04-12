@@ -3,8 +3,8 @@ output "agents_sg_id" {
   value = aws_security_group.agents.id
 }
 
-output "services_sg_ids" {
-  value = aws_security_group.services.*.id
+output "clients_sg_ids" {
+  value = aws_security_group.clients.*.id
 }
 
 # Servers ELB outputs.
@@ -20,21 +20,21 @@ output "servers_lb_zone_id" {
   value = aws_elb.servers.zone_id
 }
 
-# Services ELBs outputs.
-output "services_lb_ids" {
-  value = aws_elb.services.*.id
+# Clients ELBs outputs.
+output "clients_lb_ids" {
+  value = aws_elb.clients.*.id
 }
 
-output "services_lb_dns_names" {
-  value = aws_elb.services.*.dns_name
+output "clients_lb_dns_names" {
+  value = aws_elb.clients.*.dns_name
 }
 
-output "services_lb_names" {
-  value = aws_elb.services.*.name
+output "clients_lb_names" {
+  value = aws_elb.clients.*.name
 }
 
-output "services_lb_zone_ids" {
-  value = aws_elb.services.*.zone_id
+output "clients_lb_zone_ids" {
+  value = aws_elb.clients.*.zone_id
 }
 
 # Nomad and Consul address.

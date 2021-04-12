@@ -60,21 +60,21 @@ resource "aws_security_group" "agents" {
   }
 }
 
-resource "aws_security_group" "services" {
-  count = length(var.services)
+resource "aws_security_group" "clients" {
+  count = length(var.client_load_balancers)
 
-  name_prefix = "${var.stack_name}-services-${count.index + 1}"
+  name_prefix = "${var.stack_name}-${var.client_load_balancers[count.index].name}-clients"
   vpc_id      = local.vpc_id
 
   dynamic "ingress" {
-    for_each = var.services[count.index]
+    for_each = var.client_load_balancers[count.index].listeners
     content {
       protocol    = ingress.value["protocol"]
       from_port   = ingress.value["port"]
       to_port     = ingress.value["port"]
       cidr_blocks = var.allowed_ips
       security_groups = [
-        aws_security_group.services_lb[count.index].id,
+        aws_security_group.clients_lb[count.index].id,
       ]
     }
   }
@@ -132,14 +132,14 @@ resource "aws_security_group" "servers_lb" {
   }
 }
 
-resource "aws_security_group" "services_lb" {
-  count = length(var.services)
+resource "aws_security_group" "clients_lb" {
+  count = length(var.client_load_balancers)
 
-  name_prefix = "${var.stack_name}-services-${count.index + 1}"
+  name_prefix = "${var.stack_name}-${var.client_load_balancers[count.index].name}-clients-lb"
   vpc_id      = local.vpc_id
 
   dynamic "ingress" {
-    for_each = var.services[count.index]
+    for_each = var.client_load_balancers[count.index].listeners
     content {
       protocol    = ingress.value["protocol"]
       from_port   = ingress.value["port"]

@@ -24,11 +24,14 @@ variable "server_ids" {
 }
 
 # Optional variables.
-variable "services" {
-  type = list(list(object({
-    port     = number
-    protocol = string
-  })))
+variable "client_load_balancers" {
+  type = list(object({
+    name = string
+    listeners = list(object({
+      port     = number
+      protocol = string
+    }))
+  }))
   default     = []
   description = "List of a list of services. Each top-level list represents a load balancer, with multiple ports to expose within."
 }

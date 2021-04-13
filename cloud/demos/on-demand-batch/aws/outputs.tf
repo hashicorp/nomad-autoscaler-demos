@@ -20,8 +20,7 @@ output "cleanup" {
   sensitive = true
 
   value = <<EOF
-
-Please run the following commands in your terminal:
+Once you are done with the demo, please run the following commands after running `terraform destroy`:
 
   aws ec2 deregister-image --image-id ${module.image.id} --region ${var.region}
   aws ec2 delete-snapshot --snapshot-id ${module.image.snapshot_id} --region ${var.region}

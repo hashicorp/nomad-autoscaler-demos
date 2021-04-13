@@ -216,7 +216,7 @@
       "fill": 10,
       "fillGradient": 0,
       "gridPos": {
-        "h": 12,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 8
@@ -333,7 +333,7 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 12,
+        "h": 9,
         "w": 12,
         "x": 12,
         "y": 8

@@ -7,8 +7,8 @@ job "batch" {
   }
 
   meta {
-    sleep = "60"
-    splay = "30"
+    sleep = "180"
+    splay = "60"
   }
 
   constraint {

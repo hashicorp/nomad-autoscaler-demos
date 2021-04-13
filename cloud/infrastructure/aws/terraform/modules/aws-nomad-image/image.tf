@@ -21,11 +21,11 @@ EOF
   }
 }
 
-resource "local_file" "packer_build" {
+resource "local_file" "cleanup" {
   count = local.build_image ? 1 : 0
 
   content  = "${local.image_id},${local.snapshot_id},${var.region}"
-  filename = ".packer_build"
+  filename = ".cleanup"
 
   provisioner "local-exec" {
     when    = destroy

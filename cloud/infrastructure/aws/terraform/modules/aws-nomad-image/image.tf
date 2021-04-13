@@ -21,6 +21,21 @@ EOF
   }
 }
 
+resource "local_file" "packer_build" {
+  count = local.build_image ? 1 : 0
+
+  content  = "${local.image_id},${local.snapshot_id},${var.region}"
+  filename = ".packer_build"
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOF
+aws ec2 deregister-image --image-id ${split(",", self.content)[0]} --region ${split(",", self.content)[2]} &&
+aws ec2 delete-snapshot --snapshot-id ${split(",", self.content)[1]} --region ${split(",", self.content)[2]}
+EOF
+  }
+}
+
 data "aws_ami" "built" {
   depends_on = [null_resource.packer_build]
   count      = local.build_image ? 1 : 0

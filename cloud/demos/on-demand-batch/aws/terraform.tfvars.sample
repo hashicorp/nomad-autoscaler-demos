@@ -1,0 +1,5 @@
+region             = "us-east-1"
+availability_zones = ["us-east-1a"]
+key_name           = ""
+owner_name         = ""
+owner_email        = ""

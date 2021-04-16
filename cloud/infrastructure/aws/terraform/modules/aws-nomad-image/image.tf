@@ -24,8 +24,9 @@ EOF
 resource "local_file" "cleanup" {
   count = local.build_image ? 1 : 0
 
-  content  = "${local.image_id},${local.snapshot_id},${var.region}"
-  filename = ".cleanup"
+  content         = "${local.image_id},${local.snapshot_id},${var.region}"
+  filename        = ".cleanup-${local.image_id}"
+  file_permission = "0644"
 
   provisioner "local-exec" {
     when    = destroy

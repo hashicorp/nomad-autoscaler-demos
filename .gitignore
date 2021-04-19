@@ -16,3 +16,6 @@
 
 # Terraform vars file
 terraform.tfvars
+
+# Cleanup files
+.cleanup*

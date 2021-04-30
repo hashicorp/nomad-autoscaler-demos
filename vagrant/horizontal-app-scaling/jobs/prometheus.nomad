@@ -43,14 +43,6 @@ scrape_configs:
   - job_name: haproxy_exporter
     static_configs:
       - targets: [{{ range service "haproxy-exporter" }}'{{ .Address }}:{{ .Port }}',{{ end }}]
-
-  - job_name: nomad_autoscaler
-    metrics_path: /v1/metrics
-    params:
-      format: ['prometheus']
-    static_configs:
-      - targets: [{{ range service "autoscaler" }}'{{ .Address }}:{{ .Port }}',{{ end }}]
-
   - job_name: consul
     metrics_path: /v1/agent/metrics
     params:

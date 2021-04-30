@@ -9,25 +9,6 @@ job "webapp" {
       port "toxiproxy_webapp" {}
     }
 
-    scaling {
-      enabled = false
-      min     = 1
-      max     = 20
-
-      policy {
-        cooldown = "20s"
-
-        check "avg_instance_sessions" {
-          source = "prometheus"
-          query  = "avg((haproxy_server_current_sessions{backend=\"http_back\"}) and (haproxy_server_up{backend=\"http_back\"} == 1))"
-
-          strategy "target-value" {
-            target = 5
-          }
-        }
-      }
-    }
-
     task "webapp" {
       driver = "docker"
 

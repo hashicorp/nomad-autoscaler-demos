@@ -8,11 +8,6 @@ job "grafana" {
       port "grafana_ui" {}
     }
 
-    volume "grafana" {
-      type   = "host"
-      source = "grafana"
-    }
-
     task "grafana" {
       driver = "docker"
 
@@ -82,11 +77,6 @@ providers:
 EOH
 
         destination = "local/dashboards/nomad-autoscaler.yaml"
-      }
-
-      volume_mount {
-        volume      = "grafana"
-        destination = "/var/lib/grafana"
       }
 
       resources {

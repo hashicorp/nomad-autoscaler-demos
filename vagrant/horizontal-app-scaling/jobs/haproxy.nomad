@@ -24,6 +24,38 @@ job "haproxy" {
       port "haproxy_exporter" {}
     }
 
+    scaling {
+      enabled = true
+      min     = 1
+      max     = 20
+
+      policy {
+        cooldown = "20s"
+
+        check "low_traffic" {
+          source       = "prometheus"
+          query        = "avg((haproxy_server_current_sessions{backend=\"http_back\"}) and (haproxy_server_up{backend=\"http_back\"} == 1))"
+          query_window = "30s"
+
+          strategy "threshold" {
+            upper_bound = 5
+            delta       = -1
+          }
+        }
+
+        check "high_traffic" {
+          source       = "prometheus"
+          query        = "avg((haproxy_server_current_sessions{backend=\"http_back\"}) and (haproxy_server_up{backend=\"http_back\"} == 1))"
+          query_window = "30s"
+
+          strategy "threshold" {
+            lower_bound = 15
+            delta       = 1
+          }
+        }
+      }
+    }
+
     task "haproxy" {
       driver = "docker"
 

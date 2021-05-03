@@ -15,7 +15,7 @@ job "autoscaler" {
       driver = "docker"
 
       config {
-        image   = "hashicorp/nomad-autoscaler:0.3.2"
+        image   = "hashicorp/nomad-autoscaler:0.3.3"
         command = "nomad-autoscaler"
         ports   = ["http"]
 

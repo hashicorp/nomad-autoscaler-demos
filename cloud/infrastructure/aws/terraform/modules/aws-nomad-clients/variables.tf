@@ -66,6 +66,12 @@ variable "min_size" {
   description = "Minimum number of instances allowed."
 }
 
+variable "nomad_datacenter" {
+  type        = string
+  default     = "dc1"
+  description = "Nomad datacenter where the clients will be registered."
+}
+
 variable "nomad_node_class" {
   type        = string
   default     = "hashistack"

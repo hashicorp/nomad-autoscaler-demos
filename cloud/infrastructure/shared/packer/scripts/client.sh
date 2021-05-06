@@ -18,6 +18,7 @@ DOCKER_BRIDGE_IP_ADDRESS=$(net_getInterfaceAddress docker0)
 CLOUD=$1
 RETRY_JOIN=$2
 NODE_CLASS=$3
+DATACENTER=$4
 
 # Consul
 sed -i "s/IP_ADDRESS/$IP_ADDRESS/g" $CONFIGDIR/consul_client.hcl
@@ -46,7 +47,21 @@ if [[ `wget -S --spider $NOMAD_BINARY  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
   sudo chown root:root /usr/local/bin/nomad
 fi
 
-sed -i "s/NODE_CLASS/\"$NODE_CLASS\"/g" $CONFIGDIR/nomad_client.hcl
+## Render configuration values
+if [[ -z "$NODE_CLASS" ]]; then
+  # Delete node_class config if not set
+  sed -i "/node_class/d" $CONFIGDIR/nomad_client.hcl
+else
+  sed -i "s/NODE_CLASS/\"$NODE_CLASS\"/g" $CONFIGDIR/nomad_client.hcl
+fi
+
+if [[ -z "$DATACENTER" ]]; then
+  # Delete datacenter config if not set
+  sed -i "/datacenter/d" $CONFIGDIR/nomad_client.hcl
+else
+  sed -i "s/DATACENTER/\"$DATACENTER\"/g" $CONFIGDIR/nomad_client.hcl
+fi
+
 sudo cp $CONFIGDIR/nomad_client.hcl $NOMADCONFIGDIR/nomad.hcl
 sudo cp $CONFIGDIR/nomad.service /etc/systemd/system/nomad.service
 

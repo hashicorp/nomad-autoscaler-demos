@@ -1,10 +1,5 @@
 job "prometheus" {
-  datacenters = ["dc1"]
-
-  constraint {
-    attribute = "${node.class}"
-    value     = "platform"
-  }
+  datacenters = ["platform"]
 
   group "prometheus" {
     network {

@@ -1,10 +1,5 @@
 job "grafana" {
-  datacenters = ["dc1"]
-
-  constraint {
-    attribute = "$${node.class}"
-    value     = "platform"
-  }
+  datacenters = ["platform"]
 
   group "grafana" {
     network {

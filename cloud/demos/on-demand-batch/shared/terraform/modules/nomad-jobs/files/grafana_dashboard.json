@@ -147,6 +147,7 @@
           },
           "custom": {},
           "decimals": 0,
+          "displayName": "${__series.name}",
           "mappings": [],
           "max": 5,
           "min": 0,
@@ -169,7 +170,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "batch"
+              "options": "batch_workers"
             },
             "properties": [
               {
@@ -221,15 +222,15 @@
       "pluginVersion": "7.4.2",
       "targets": [
         {
-          "expr": "count by (node_class) (nomad_client_uptime{node_status=\"ready\"})",
+          "expr": "count by (datacenter) (nomad_client_uptime{node_status=\"ready\"})",
           "interval": "",
-          "legendFormat": "{{node_class}}",
+          "legendFormat": "{{datacenter}}",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Clients per node class",
+      "title": "Clients per datacenter",
       "type": "gauge"
     },
     {
@@ -408,11 +409,11 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "count by (node_class) (nomad_client_uptime{node_status=\"ready\"})",
+          "expr": "count by (datacenter) (nomad_client_uptime{node_status=\"ready\"})",
           "instant": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{node_class}}",
+          "legendFormat": "{{datacenter}}",
           "refId": "A"
         }
       ],

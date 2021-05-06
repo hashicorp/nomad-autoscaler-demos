@@ -1,11 +1,6 @@
 job "traefik" {
-  datacenters = ["dc1"]
+  datacenters = ["platform"]
   type        = "system"
-
-  constraint {
-    attribute = "${node.class}"
-    value     = "platform"
-  }
 
   group "traefik" {
     network {

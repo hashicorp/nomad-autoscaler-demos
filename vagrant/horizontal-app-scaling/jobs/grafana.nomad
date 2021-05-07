@@ -8,11 +8,6 @@ job "grafana" {
       port "grafana_ui" {}
     }
 
-    volume "grafana" {
-      type   = "host"
-      source = "grafana"
-    }
-
     task "grafana" {
       driver = "docker"
 
@@ -23,7 +18,7 @@ job "grafana" {
         volumes = [
           "local/datasources:/etc/grafana/provisioning/datasources",
           "local/dashboards:/etc/grafana/provisioning/dashboards",
-          "/home/vagrant/nomad-autoscaler/files:/var/lib/grafana/dashboards",
+          "local/dashboard_sources:/var/lib/grafana/dashboards",
         ]
       }
 
@@ -31,6 +26,13 @@ job "grafana" {
         GF_AUTH_ANONYMOUS_ENABLED  = "true"
         GF_AUTH_ANONYMOUS_ORG_ROLE = "Editor"
         GF_SERVER_HTTP_PORT        = "${NOMAD_PORT_grafana_ui}"
+      }
+
+      template {
+        data            = file("../files/dashboard.json")
+        left_delimiter  = "[["
+        right_delimiter = "]]"
+        destination     = "local/dashboard_sources/nomad-autoscaler.json"
       }
 
       template {
@@ -82,11 +84,6 @@ providers:
 EOH
 
         destination = "local/dashboards/nomad-autoscaler.yaml"
-      }
-
-      volume_mount {
-        volume      = "grafana"
-        destination = "/var/lib/grafana"
       }
 
       resources {

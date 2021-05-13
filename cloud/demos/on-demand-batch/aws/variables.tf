@@ -25,6 +25,6 @@ variable "allowed_ips" {
 }
 
 variable "nomad_binary_url" {
-  default     = "https://releases.hashicorp.com/nomad/1.1.0-beta1/nomad_1.1.0-beta1_linux_amd64.zip"
+  default     = "https://releases.hashicorp.com/nomad/1.1.0-rc1/nomad_1.1.0-rc1_linux_amd64.zip"
   description = "Overiding the Nomad Binary url."
 }

@@ -1,13 +1,18 @@
 variable "owner_email" {}
 variable "owner_name" {}
 variable "region" {}
+variable "vpc_id" {}
+variable "subnet_id" {}
 variable "stack_name" {}
 
 source "amazon-ebs" "hashistack" {
   ami_name      = var.stack_name
   region        = var.region
-  instance_type = "t2.medium"
-
+  instance_type = "t3.large"
+  vpc_id = var.vpc_id
+  subnet_id = var.subnet_id
+  associate_public_ip_address = true
+  
   source_ami_filter {
     filters = {
       virtualization-type = "hvm"

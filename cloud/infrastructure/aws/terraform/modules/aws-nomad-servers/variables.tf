@@ -4,11 +4,6 @@ variable "ami_id" {
   description = "The AMI ID to use when launching new instances."
 }
 
-variable "availability_zones" {
-  type        = list(string)
-  description = "List of availability zones where new instances will be allowed to launch."
-}
-
 variable "key_name" {
   type        = string
   description = "The SSH key name used to access instances."
@@ -16,7 +11,7 @@ variable "key_name" {
 
 variable "owner_name" {
   type        = string
-  description = "The name used to identify the owner of the resources provisioned by this module. It will be stored in a tag called OwnerName."
+  description = "The email used to contact the owner of the resources provisioned by this module. It will be stored in a tag called OwnerEmail."
 }
 
 variable "owner_email" {
@@ -64,4 +59,14 @@ variable "stack_name" {
   type        = string
   default     = "hashistack"
   description = "Name used to identify resources provisioned by this module."
+}
+
+variable "vpc_id" {
+  type        = string
+  default     = "vpc-06658c77e5fd824db"
+  description = "The VPC where resources will be provisioned."
+}
+
+variable "subnet_ids" {
+  type = list(string)
 }

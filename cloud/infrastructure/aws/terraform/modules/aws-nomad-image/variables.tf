@@ -1,6 +1,7 @@
 # Required variables.
 variable "region" {
   type        = string
+  //default = "us-east-1"
   description = "The AWS region where the image will be created."
 }
 
@@ -25,4 +26,12 @@ variable "stack_name" {
   type        = string
   default     = "hashistack"
   description = "Name used to identify resources provisioned by this module."
+}
+
+variable "vpc_id" {
+  type = string
+}
+
+variable "subnet_id" {
+  type = string
 }

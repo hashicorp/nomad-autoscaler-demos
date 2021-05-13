@@ -34,6 +34,8 @@ module "image" {
 
   ami_id      = var.ami_id
   region      = var.region
+  vpc_id      = aws_vpc.main.id
+  subnet_id   = aws_subnet.public[0].id
   stack_name  = random_pet.stack_name.id
   owner_name  = var.owner_name
   owner_email = var.owner_email
@@ -44,11 +46,12 @@ module "servers" {
   depends_on = [null_resource.preflight_check]
 
   stack_name         = random_pet.stack_name.id
+  nomad_binary_url = var.nomad_binary_url
   ami_id             = module.image.id
   key_name           = var.key_name
   owner_name         = var.owner_name
   owner_email        = var.owner_email
-  availability_zones = var.availability_zones
+  subnet_ids = aws_subnet.public.*.id
   security_group_ids = [module.network.agents_sg_id]
 }
 
@@ -58,13 +61,14 @@ module "clients_platform" {
 
   nomad_node_class    = "platform"
   stack_name          = random_pet.stack_name.id
+  nomad_binary_url = var.nomad_binary_url
   ami_id              = module.image.id
-  availability_zones  = var.availability_zones
   key_name            = var.key_name
   owner_name          = var.owner_name
   owner_email         = var.owner_email
   security_group_ids  = [module.network.agents_sg_id, module.network.clients_sg_ids[0]]
   load_balancer_names = [module.network.clients_lb_names[0]]
+  subnet_ids = aws_subnet.public.*.id
 }
 
 module "clients_batch" {
@@ -74,12 +78,13 @@ module "clients_batch" {
   nomad_node_class   = "batch"
   desired_capacity   = 0
   stack_name         = random_pet.stack_name.id
+  nomad_binary_url = var.nomad_binary_url
   ami_id             = module.image.id
-  availability_zones = var.availability_zones
   key_name           = var.key_name
   owner_name         = var.owner_name
   owner_email        = var.owner_email
   security_group_ids = [module.network.agents_sg_id]
+  subnet_ids = aws_subnet.public.*.id
 }
 
 module "network" {
@@ -93,4 +98,6 @@ module "network" {
   server_ids            = module.servers.ids
   allowed_ips           = local.allowed_ips
   client_load_balancers = local.client_load_balancers
+  vpc_id = aws_vpc.main.id
+  subnets = aws_subnet.public.*.id
 }

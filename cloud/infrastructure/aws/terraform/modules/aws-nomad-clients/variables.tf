@@ -4,11 +4,6 @@ variable "ami_id" {
   description = "The AMI ID to use when launching new instances."
 }
 
-variable "availability_zones" {
-  type        = list(string)
-  description = "List of availability zones where new instances will be allowed to launch."
-}
-
 variable "key_name" {
   type        = string
   description = "The SSH key name used to access instances."
@@ -88,4 +83,8 @@ variable "stack_name" {
   type        = string
   default     = "hashistack"
   description = "Name used to identify resources provisioned by this module."
+}
+
+variable "subnet_ids" {
+  type = list(string)
 }

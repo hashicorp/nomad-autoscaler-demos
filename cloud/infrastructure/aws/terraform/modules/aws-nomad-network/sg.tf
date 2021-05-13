@@ -1,14 +1,6 @@
-locals {
-  vpc_id = var.vpc_id != "" ? var.vpc_id : data.aws_vpc.default.id
-}
-
-data "aws_vpc" "default" {
-  default = true
-}
-
 resource "aws_security_group" "agents" {
   name_prefix = "${var.stack_name}-agents"
-  vpc_id      = local.vpc_id
+  vpc_id      = var.vpc_id
 
   # SSH
   ingress {
@@ -64,7 +56,7 @@ resource "aws_security_group" "clients" {
   count = length(var.client_load_balancers)
 
   name_prefix = "${var.stack_name}-${var.client_load_balancers[count.index].name}-clients"
-  vpc_id      = local.vpc_id
+  vpc_id      = var.vpc_id
 
   dynamic "ingress" {
     for_each = var.client_load_balancers[count.index].listeners
@@ -101,7 +93,7 @@ resource "aws_security_group" "clients" {
 
 resource "aws_security_group" "servers_lb" {
   name_prefix = "${var.stack_name}-servers-lb"
-  vpc_id      = local.vpc_id
+  vpc_id      = var.vpc_id
 
   # Nomad
   ingress {
@@ -136,7 +128,7 @@ resource "aws_security_group" "clients_lb" {
   count = length(var.client_load_balancers)
 
   name_prefix = "${var.stack_name}-${var.client_load_balancers[count.index].name}-clients-lb"
-  vpc_id      = local.vpc_id
+  vpc_id      = var.vpc_id
 
   dynamic "ingress" {
     for_each = var.client_load_balancers[count.index].listeners

@@ -1,7 +1,7 @@
 resource "aws_elb" "servers" {
   name               = substr("${var.stack_name}-servers", 0, 32)
   instances          = var.server_ids
-  availability_zones = var.availability_zones
+  subnets = var.subnets
   security_groups    = [aws_security_group.servers_lb.id]
   internal           = false
   idle_timeout       = 360
@@ -32,7 +32,7 @@ resource "aws_elb" "clients" {
   count = length(var.client_load_balancers)
 
   name               = substr("${var.stack_name}-${var.client_load_balancers[count.index].name}", 0, 32)
-  availability_zones = var.availability_zones
+  subnets = var.subnets
   security_groups    = [aws_security_group.clients[count.index].id]
   internal           = false
 

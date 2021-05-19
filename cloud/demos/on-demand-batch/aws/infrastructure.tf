@@ -46,7 +46,6 @@ module "servers" {
   depends_on = [null_resource.preflight_check]
 
   stack_name         = random_pet.stack_name.id
-  nomad_binary_url = var.nomad_binary_url
   ami_id             = module.image.id
   key_name           = var.key_name
   owner_name         = var.owner_name
@@ -61,7 +60,6 @@ module "clients_platform" {
 
   nomad_node_class    = "platform"
   stack_name          = random_pet.stack_name.id
-  nomad_binary_url = var.nomad_binary_url
   ami_id              = module.image.id
   key_name            = var.key_name
   owner_name          = var.owner_name
@@ -78,7 +76,6 @@ module "clients_batch" {
   nomad_node_class   = "batch"
   desired_capacity   = 0
   stack_name         = random_pet.stack_name.id
-  nomad_binary_url = var.nomad_binary_url
   ami_id             = module.image.id
   key_name           = var.key_name
   owner_name         = var.owner_name

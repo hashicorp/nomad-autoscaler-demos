@@ -24,7 +24,3 @@ variable "allowed_ips" {
   description = "List of IP addresses allowed to access the infrastructure. If left empty, only the IP of the machine running Terraform will be allowed."
 }
 
-variable "nomad_binary_url" {
-  default     = "https://releases.hashicorp.com/nomad/1.1.0-rc1/nomad_1.1.0-rc1_linux_amd64.zip"
-  description = "Overiding the Nomad Binary url."
-}

@@ -11,7 +11,7 @@ variable "key_name" {
 
 variable "owner_name" {
   type        = string
-  description = "The email used to contact the owner of the resources provisioned by this module. It will be stored in a tag called OwnerEmail."
+  description = "The name used to identify the owner of the resources provisioned by this module. It will be stored in a tag called OwnerName."
 }
 
 variable "owner_email" {

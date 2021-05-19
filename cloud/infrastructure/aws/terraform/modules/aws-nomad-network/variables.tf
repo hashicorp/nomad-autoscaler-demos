@@ -11,7 +11,6 @@ variable "availability_zones" {
 
 variable "subnets" {
   type        = list(string)
-  //default = ["subnet-0744d808193e47a4a", "subnet-0780f7c6f9800a570", "subnet-09b54a66df816392f"]
   description = "List of subnets where new instances will be allowed to launch."
 }
 

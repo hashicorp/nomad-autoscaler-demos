@@ -3,5 +3,3 @@ availability_zones = ["us-east-1a"]
 key_name           = ""
 owner_name         = ""
 owner_email        = ""
-vpc_name           = ""
-vpc_cidr           = "172.31.0.0/16"

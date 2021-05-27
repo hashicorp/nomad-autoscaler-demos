@@ -34,8 +34,8 @@ module "image" {
 
   ami_id      = var.ami_id
   region      = var.region
-  vpc_id      = aws_vpc.main.id
-  subnet_id   = aws_subnet.public[0].id
+  vpc_id      = module.network.vpc_id
+  subnet_id   = module.network.subnet_id
   stack_name  = random_pet.stack_name.id
   owner_name  = var.owner_name
   owner_email = var.owner_email
@@ -50,7 +50,7 @@ module "servers" {
   key_name           = var.key_name
   owner_name         = var.owner_name
   owner_email        = var.owner_email
-  subnet_ids         = aws_subnet.public.*.id
+  subnet_ids         = [module.network.subnet_id]
   security_group_ids = [module.network.agents_sg_id]
 }
 
@@ -65,8 +65,8 @@ module "clients_platform" {
   owner_name          = var.owner_name
   owner_email         = var.owner_email
   security_group_ids  = [module.network.agents_sg_id, module.network.clients_sg_ids[0]]
+  subnet_ids          = [module.network.subnet_id]
   load_balancer_names = [module.network.clients_lb_names[0]]
-  subnet_ids          = aws_subnet.public.*.id
 }
 
 module "clients_batch" {
@@ -81,7 +81,7 @@ module "clients_batch" {
   owner_name         = var.owner_name
   owner_email        = var.owner_email
   security_group_ids = [module.network.agents_sg_id]
-  subnet_ids         = aws_subnet.public.*.id
+  subnet_ids         = [module.network.subnet_id]
 }
 
 module "network" {
@@ -89,12 +89,9 @@ module "network" {
   depends_on = [null_resource.preflight_check]
 
   stack_name            = random_pet.stack_name.id
-  availability_zones    = var.availability_zones
   owner_name            = var.owner_name
   owner_email           = var.owner_email
   server_ids            = module.servers.ids
   allowed_ips           = local.allowed_ips
   client_load_balancers = local.client_load_balancers
-  vpc_id                = aws_vpc.main.id
-  subnets               = aws_subnet.public.*.id
 }

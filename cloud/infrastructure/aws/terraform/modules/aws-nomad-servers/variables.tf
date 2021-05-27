@@ -24,6 +24,11 @@ variable "security_group_ids" {
   description = "List of security group IDs to associate the instances."
 }
 
+variable "subnet_ids" {
+  type        = list(string)
+  description = "Subnets to use to provision instances."
+}
+
 # Optional variables.
 variable "consul_binary_url" {
   type        = string
@@ -59,14 +64,4 @@ variable "stack_name" {
   type        = string
   default     = "hashistack"
   description = "Name used to identify resources provisioned by this module."
-}
-
-variable "vpc_id" {
-  type        = string
-  default     = "vpc-06658c77e5fd824db"
-  description = "The VPC where resources will be provisioned."
-}
-
-variable "subnet_ids" {
-  type = list(string)
 }

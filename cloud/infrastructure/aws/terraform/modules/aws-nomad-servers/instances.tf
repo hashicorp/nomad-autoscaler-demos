@@ -4,7 +4,7 @@ resource "aws_instance" "servers" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
   key_name               = var.key_name
-  subnet_id              = var.subnet_ids[0]
+  subnet_id              = element(var.subnet_ids, count.index)
   vpc_security_group_ids = var.security_group_ids
   iam_instance_profile   = aws_iam_instance_profile.servers.name
   user_data              = data.template_file.user_data.rendered

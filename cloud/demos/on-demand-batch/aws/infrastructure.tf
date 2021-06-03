@@ -58,7 +58,7 @@ module "clients_platform" {
   source     = "../../../infrastructure/aws/terraform/modules/aws-nomad-clients"
   depends_on = [null_resource.preflight_check]
 
-  nomad_node_class    = "platform"
+  nomad_datacenter    = "platform"
   stack_name          = random_pet.stack_name.id
   ami_id              = module.image.id
   key_name            = var.key_name
@@ -73,7 +73,7 @@ module "clients_batch" {
   source     = "../../../infrastructure/aws/terraform/modules/aws-nomad-clients"
   depends_on = [null_resource.preflight_check]
 
-  nomad_node_class   = "batch"
+  nomad_datacenter   = "batch_workers"
   desired_capacity   = 0
   stack_name         = random_pet.stack_name.id
   ami_id             = module.image.id

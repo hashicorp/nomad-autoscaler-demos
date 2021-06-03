@@ -1,5 +1,5 @@
 job "batch" {
-  datacenters = ["dc1"]
+  datacenters = ["batch_workers"]
   type        = "batch"
 
   parameterized {
@@ -9,11 +9,6 @@ job "batch" {
   meta {
     sleep = "180"
     splay = "60"
-  }
-
-  constraint {
-    attribute = "${node.class}"
-    value     = "batch"
   }
 
   group "batch" {

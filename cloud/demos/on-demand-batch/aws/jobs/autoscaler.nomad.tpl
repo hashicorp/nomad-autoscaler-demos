@@ -1,10 +1,5 @@
 job "autoscaler" {
-  datacenters = ["dc1"]
-
-  constraint {
-    attribute = "$${node.class}"
-    value     = "platform"
-  }
+  datacenters = ["platform"]
 
   group "autoscaler" {
     network {
@@ -81,7 +76,7 @@ scaling "batch" {
 
     target "aws-asg" {
       aws_asg_name           = "${aws_asg_name}"
-      node_class             = "batch"
+      datacenter             = "batch_workers"
       node_drain_deadline    = "1h"
       node_selector_strategy = "empty_ignore_system"
     }

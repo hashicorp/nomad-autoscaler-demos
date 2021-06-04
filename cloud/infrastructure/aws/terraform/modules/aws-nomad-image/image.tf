@@ -16,6 +16,8 @@ cd ${path.module}/../../../packer && \
     -var 'owner_email=${var.owner_email}' \
     -var 'region=${var.region}' \
     -var 'stack_name=${var.stack_name}' \
+    -var 'vpc_id=${var.vpc_id}' \
+    -var 'subnet_id=${var.subnet_id}' \
     aws-packer.pkr.hcl
 EOF
   }

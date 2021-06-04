@@ -1,10 +1,10 @@
 resource "aws_elb" "servers" {
-  name               = substr("${var.stack_name}-servers", 0, 32)
-  instances          = var.server_ids
-  availability_zones = var.availability_zones
-  security_groups    = [aws_security_group.servers_lb.id]
-  internal           = false
-  idle_timeout       = 360
+  name            = substr("${var.stack_name}-servers", 0, 32)
+  instances       = var.server_ids
+  subnets         = aws_subnet.public.*.id
+  security_groups = [aws_security_group.servers_lb.id]
+  internal        = false
+  idle_timeout    = 360
 
   # Nomad
   listener {
@@ -31,10 +31,10 @@ resource "aws_elb" "servers" {
 resource "aws_elb" "clients" {
   count = length(var.client_load_balancers)
 
-  name               = substr("${var.stack_name}-${var.client_load_balancers[count.index].name}", 0, 32)
-  availability_zones = var.availability_zones
-  security_groups    = [aws_security_group.clients[count.index].id]
-  internal           = false
+  name            = substr("${var.stack_name}-${var.client_load_balancers[count.index].name}", 0, 32)
+  subnets         = aws_subnet.public.*.id
+  security_groups = [aws_security_group.clients[count.index].id]
+  internal        = false
 
   dynamic "listener" {
     for_each = var.client_load_balancers[count.index].listeners

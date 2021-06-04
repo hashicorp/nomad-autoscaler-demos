@@ -4,11 +4,6 @@ variable "allowed_ips" {
   description = "List of IP addresses that are allowed to connect to the cluster."
 }
 
-variable "availability_zones" {
-  type        = list(string)
-  description = "List of availability zones where new instances will be allowed to launch."
-}
-
 variable "owner_name" {
   type        = string
   description = "The name used to identify the owner of the resources provisioned by this module. It will be stored in a tag called OwnerName."
@@ -43,8 +38,8 @@ variable "stack_name" {
   description = "Name used to identify resources provisioned by this module."
 }
 
-variable "vpc_id" {
+variable "vpc_cidr" {
   type        = string
-  default     = ""
-  description = "The VPC where resources will be provisioned."
+  default     = "172.31.0.0/16"
+  description = "The CIDR to use when defining the VPC"
 }

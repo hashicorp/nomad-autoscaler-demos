@@ -1,5 +1,4 @@
 # Required variables.
-variable "availability_zones" {}
 variable "key_name" {}
 variable "owner_name" {}
 variable "owner_email" {}

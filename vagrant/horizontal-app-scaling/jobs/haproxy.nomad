@@ -28,7 +28,7 @@ job "haproxy" {
       driver = "docker"
 
       config {
-        image = "haproxy:2.3.5"
+        image = "haproxy:2.6.2"
         ports = ["webapp", "haproxy_ui"]
 
         # Use `host` network so we can communicate with the Consul agent
@@ -121,7 +121,7 @@ EOF
       }
 
       config {
-        image = "prom/haproxy-exporter:v0.10.0"
+        image = "prom/haproxy-exporter:v0.13.0"
         ports = ["haproxy_exporter"]
 
         args = [

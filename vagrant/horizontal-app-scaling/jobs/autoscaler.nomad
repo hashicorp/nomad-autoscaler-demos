@@ -15,7 +15,7 @@ job "autoscaler" {
       driver = "docker"
 
       config {
-        image   = "hashicorp/nomad-autoscaler:0.3.3"
+        image   = "hashicorp/nomad-autoscaler:0.3.7"
         command = "nomad-autoscaler"
         ports   = ["http"]
 
@@ -96,7 +96,7 @@ strategy "target-value" {
       }
 
       config {
-        image = "grafana/promtail:1.5.0"
+        image = "grafana/promtail:2.6.1"
         ports = ["promtail"]
 
         args = [
@@ -119,7 +119,6 @@ client:
 
 scrape_configs:
 - job_name: system
-  entry_parser: raw
   static_configs:
   - targets:
       - localhost

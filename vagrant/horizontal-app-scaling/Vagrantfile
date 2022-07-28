@@ -5,13 +5,11 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/jammy64"
 
   # Expose ports to the host.
-  config.vm.network "forwarded_port", guest: 4646, host: 4646, host_ip: "127.0.0.1"    # Nomad
-  config.vm.network "forwarded_port", guest: 8500, host: 8500, host_ip: "127.0.0.1"    # Consul UI
-  config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "127.0.0.1"    # Nomad Autoscaler health check
-  config.vm.network "forwarded_port", guest: 8000, host: 8000, host_ip: "127.0.0.1"    # Demo webapp
-  config.vm.network "forwarded_port", guest: 1936, host: 1936, host_ip: "127.0.0.1"    # HAProxy stats
-  config.vm.network "forwarded_port", guest: 9090, host: 9090, host_ip: "127.0.0.1"    # Prometheus
   config.vm.network "forwarded_port", guest: 3000, host: 3000, host_ip: "127.0.0.1"    # Grafana
+  config.vm.network "forwarded_port", guest: 4646, host: 4646, host_ip: "127.0.0.1"    # Nomad
+  config.vm.network "forwarded_port", guest: 8000, host: 8000, host_ip: "127.0.0.1"    # Demo webapp
+  config.vm.network "forwarded_port", guest: 8081, host: 8081, host_ip: "127.0.0.1"    # Traefik admin
+  config.vm.network "forwarded_port", guest: 9090, host: 9090, host_ip: "127.0.0.1"    # Prometheus
 
   # Share current directory with jobs and configuration files with the VM. Add
   # the shared files in a sub-dir.
@@ -25,7 +23,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Provision demo dependencies.
-  #   - Downloads and install Nomad, Consul and Docker
+  #   - Downloads and install Nomad and Docker
   # Only runs when the VM is created.
   config.vm.provision "deps", type: "shell", inline: <<-SHELL
 
@@ -55,7 +53,7 @@ Vagrant.configure("2") do |config|
     docker run hello-world
     usermod -aG docker vagrant
 
-    # Download and install Nomad and Consul.
+    # Download and install Nomad.
     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
     add-apt-repository \
       "deb [arch=amd64] https://apt.releases.hashicorp.com \
@@ -63,12 +61,11 @@ Vagrant.configure("2") do |config|
       main"
       apt-get update
       apt-get install -y \
-        consul \
         nomad
   SHELL
 
   # Setup demo dependencies.
-  #   - Create daemons for Nomad and Consul
+  #   - Create daemon for Nomad
   # Runs everytime the VM starts.
   config.vm.provision "app:setup", type: "shell", run: "always", inline: <<-SHELL
     # Create paths for Nomad host volumes.
@@ -79,12 +76,9 @@ Vagrant.configure("2") do |config|
     popd
 
     # Copy across the config files.
-    cp /home/vagrant/nomad-autoscaler-shared/consul.hcl /etc/consul.d/
     cp /home/vagrant/nomad-autoscaler/files/nomad.hcl /etc/nomad.d/
 
     # Enable and start the daemons
-    systemctl enable consul
-    systemctl start consul
     sudo systemctl enable nomad
     sudo systemctl start nomad
   SHELL

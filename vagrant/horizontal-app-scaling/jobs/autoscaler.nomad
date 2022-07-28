@@ -75,15 +75,9 @@ strategy "target-value" {
       }
 
       service {
-        name = "autoscaler"
-        port = "http"
-
-        check {
-          type     = "http"
-          path     = "/v1/health"
-          interval = "3s"
-          timeout  = "1s"
-        }
+        name     = "autoscaler"
+        provider = "nomad"
+        port     = "http"
       }
     }
 
@@ -115,7 +109,7 @@ positions:
   filename: /tmp/positions.yaml
 
 client:
-  url: http://{{ range $i, $s := service "loki" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}/api/prom/push
+  url: http://{{ range $i, $s := nomadService "loki" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}/api/prom/push
 
 scrape_configs:
 - job_name: system
@@ -150,15 +144,9 @@ EOH
       }
 
       service {
-        name = "promtail"
-        port = "promtail"
-
-        check {
-          type     = "http"
-          path     = "/ready"
-          interval = "10s"
-          timeout  = "2s"
-        }
+        name     = "promtail"
+        provider = "nomad"
+        port     = "promtail"
       }
     }
   }

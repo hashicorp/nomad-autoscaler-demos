@@ -73,15 +73,9 @@ EOH
       }
 
       service {
-        name = "loki"
-        port = "loki"
-
-        check {
-          type     = "http"
-          path     = "/ready"
-          interval = "10s"
-          timeout  = "2s"
-        }
+        name     = "loki"
+        provider = "nomad"
+        port     = "loki"
       }
     }
   }

@@ -15,7 +15,7 @@ job "prometheus" {
         image = "prom/prometheus:v2.38.0"
         ports = ["prometheus_ui"]
 
-        # Use `host` network so we can communicate with the Nomad and Consul
+        # Use `host` network so we can communicate with the Nomad
         # agents running in the host and scrape their metrics.
         network_mode = "host"
 
@@ -40,24 +40,21 @@ global:
   evaluation_interval: 1s
 
 scrape_configs:
-  - job_name: haproxy_exporter
-    static_configs:
-      - targets: [{{ range service "haproxy-exporter" }}'{{ .Address }}:{{ .Port }}',{{ end }}]
-
+  - job_name: 'nomad_sd'
+    nomad_sd_configs:
+      - server: 'http://{{ env "attr.unique.network.ip-address" }}:4646'
+    relabel_configs:
+      - source_labels: ['__meta_nomad_tags']
+        regex: '(.*),metrics,(.*)'
+        action: keep
+      - source_labels: [__meta_nomad_service]
+        target_label: job
   - job_name: nomad_autoscaler
     metrics_path: /v1/metrics
     params:
       format: ['prometheus']
     static_configs:
-      - targets: [{{ range service "autoscaler" }}'{{ .Address }}:{{ .Port }}',{{ end }}]
-
-  - job_name: consul
-    metrics_path: /v1/agent/metrics
-    params:
-      format: ['prometheus']
-    static_configs:
-    - targets: ['{{ env "attr.unique.network.ip-address" }}:8500']
-
+      - targets: [{{ range nomadService "autoscaler" }}'{{ .Address }}:{{ .Port }}',{{ end }}]
   - job_name: nomad
     metrics_path: /v1/metrics
     params:
@@ -77,15 +74,14 @@ EOH
       }
 
       service {
-        name = "prometheus"
-        port = "prometheus_ui"
-
-        check {
-          type     = "http"
-          path     = "/-/healthy"
-          interval = "10s"
-          timeout  = "2s"
-        }
+        name     = "prometheus"
+        provider = "nomad"
+        port     = "prometheus_ui"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.prometheus.entrypoints=prometheus",
+          "traefik.http.routers.prometheus.rule=PathPrefix(`/`)"
+        ]
       }
     }
   }

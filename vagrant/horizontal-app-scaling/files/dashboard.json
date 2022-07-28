@@ -374,7 +374,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 15,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -650,7 +650,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "avg((haproxy_server_current_sessions{backend=\"http_back\"}) and (haproxy_server_up{backend=\"http_back\"} == 1)) OR on() vector(0)",
+          "expr": "sum(traefik_entrypoint_open_connections{entrypoint=\"webapp\"})/scalar(nomad_nomad_job_summary_running{task_group=\"demo\"}) OR on() vector(0)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -737,7 +737,7 @@
               },
               {
                 "id": "custom.axisSoftMax",
-                "value": 10
+                "value": 20
               },
               {
                 "id": "custom.axisSoftMin",
@@ -756,7 +756,7 @@
               },
               {
                 "id": "custom.fillOpacity",
-                "value": 15
+                "value": 25
               }
             ]
           },
@@ -767,13 +767,28 @@
             },
             "properties": [
               {
-                "id": "custom.lineWidth",
-                "value": 5
-              },
-              {
                 "id": "color",
                 "value": {
                   "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 5
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
                   "mode": "fixed"
                 }
               }
@@ -845,21 +860,12 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "avg((haproxy_server_current_sessions{backend=\"http_back\"}) and (haproxy_server_up{backend=\"http_back\"} == 1))",
+          "editorMode": "code",
+          "expr": "sum(traefik_entrypoint_open_connections{entrypoint=\"webapp\"})/scalar(nomad_nomad_job_summary_running{task_group=\"demo\"}) OR on() vector(0)",
           "hide": false,
           "legendFormat": "avg",
+          "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "(haproxy_server_current_sessions{backend=\"http_back\"}) and (haproxy_server_up{backend=\"http_back\"} == 1)",
-          "hide": true,
-          "interval": "",
-          "legendFormat": "{{server}}",
-          "refId": "B"
         },
         {
           "datasource": {
@@ -876,7 +882,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum((haproxy_server_current_sessions{backend=\"http_back\"}) and (haproxy_server_up{backend=\"http_back\"} == 1))",
+          "expr": "sum(traefik_entrypoint_open_connections{entrypoint=\"webapp\"})",
           "interval": "",
           "legendFormat": "total",
           "refId": "D"
@@ -1034,7 +1040,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "max(sum(nomad_client_allocs_memory_allocated{task_group=\"haproxy\",task=\"haproxy\"}) by (alloc_id))",
+          "expr": "max(sum(nomad_client_allocs_memory_allocated{task_group=\"traefik\",task=\"server\"}) by (alloc_id))",
           "interval": "",
           "legendFormat": "limit",
           "refId": "B"
@@ -1044,7 +1050,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "max(sum(nomad_client_allocs_memory_usage{task_group=\"haproxy\",task=\"haproxy\"}) by (alloc_id))",
+          "expr": "max(sum(nomad_client_allocs_memory_usage{task_group=\"traefik\",task=\"server\"}) by (alloc_id))",
           "interval": "",
           "legendFormat": "usage",
           "refId": "A"
@@ -1052,7 +1058,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "HAProxy Mem",
+      "title": "Traefik Mem",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1196,7 +1202,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "max(sum(nomad_client_allocs_memory_allocated{task_group=\"haproxy\",task=\"haproxy-exporter\"}) by (alloc_id))",
+          "expr": "max(sum(nomad_client_allocs_memory_allocated{task_group=\"autoscaler\",task=\"autoscaler\"}) by (alloc_id))",
           "interval": "",
           "legendFormat": "limit",
           "refId": "B"
@@ -1206,7 +1212,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "max(sum(nomad_client_allocs_memory_usage{task_group=\"haproxy\",task=\"haproxy-exporter\"}) by (alloc_id))",
+          "expr": "max(sum(nomad_client_allocs_memory_usage{task_group=\"autoscaler\",task=\"autoscaler\"}) by (alloc_id))",
           "interval": "",
           "legendFormat": "usage",
           "refId": "A"
@@ -1214,7 +1220,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "HAProxy Prometheus Exporter Mem",
+      "title": "Nomad Autoscaler Mem",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -2245,6 +2251,6 @@
   "timezone": "",
   "title": "Nomad Autoscaler Demo",
   "uid": "8QlvShyZz",
-  "version": 1,
+  "version": 8,
   "weekStart": ""
 }

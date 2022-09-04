@@ -17,7 +17,7 @@ job "grafana" {
       driver = "docker"
 
       config {
-        image = "grafana/grafana:9.0.5"
+        image = "grafana/grafana:9.1.2"
         ports = ["grafana_ui"]
 
         volumes = [

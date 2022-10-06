@@ -15,32 +15,33 @@ job "traefik" {
         static = 9090
       }
       port  "webapp"{
-         static = 8000
+        static = 8000
       }
     }
 
     service {
-      name = "traefik-http"
+      name     = "traefik-admin"
       provider = "nomad"
-      port = "webapp"
-    }
-
-    service {
-      name = "traefik-admin"
-      provider = "nomad"
-      port = "admin"
-      tags = [
+      port     = "admin"
+      tags     = [
         "metrics"
       ]
+
+      check {
+        type     = "http"
+        path     = "/ping"
+        interval = "10s"
+        timeout  = "2s"
+      }
     }
 
     task "server" {
       driver = "docker"
       config {
-        image = "traefik:v2.8.1"
-        ports = ["admin", "grafana", "prometheus", "webapp"]
+        image        = "traefik:v2.9.1"
+        ports        = ["admin", "grafana", "prometheus", "webapp"]
         network_mode = "host"
-        args = [
+        args         = [
           "--api.dashboard=true",
           "--api.insecure=true",
           "--entrypoints.grafana.address=:${NOMAD_PORT_grafana}",
@@ -49,6 +50,7 @@ job "traefik" {
           "--entrypoints.webapp.address=:${NOMAD_PORT_webapp}",
           "--metrics.prometheus=true",
           "--metrics.prometheus.addServicesLabels=true",
+          "--ping=true",
           "--providers.nomad=true",
           "--providers.nomad.exposedByDefault=false",
           "--providers.nomad.endpoint.address=http://${attr.unique.network.ip-address}:4646"

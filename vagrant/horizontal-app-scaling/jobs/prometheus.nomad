@@ -77,11 +77,18 @@ EOH
         name     = "prometheus"
         provider = "nomad"
         port     = "prometheus_ui"
-        tags = [
+        tags     = [
           "traefik.enable=true",
           "traefik.http.routers.prometheus.entrypoints=prometheus",
           "traefik.http.routers.prometheus.rule=PathPrefix(`/`)"
         ]
+
+        check {
+          type     = "http"
+          path     = "/-/healthy"
+          interval = "10s"
+          timeout  = "2s"
+        }
       }
     }
   }

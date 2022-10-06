@@ -96,11 +96,19 @@ tail -f /dev/null
         name     = "webapp"
         provider = "nomad"
         port     = "toxiproxy_webapp"
-        tags = [
+        tags     = [
           "traefik.enable=true",
           "traefik.http.routers.webapp.entrypoints=webapp",
           "traefik.http.routers.webapp.rule=PathPrefix(`/`)"
         ]
+
+        check {
+          type           = "http"
+          path           = "/"
+          interval       = "5s"
+          timeout        = "3s"
+          initial_status = "passing"
+        }
       }
     }
   }

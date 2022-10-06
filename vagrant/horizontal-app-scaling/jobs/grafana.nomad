@@ -17,7 +17,7 @@ job "grafana" {
       driver = "docker"
 
       config {
-        image = "grafana/grafana:9.1.2"
+        image = "grafana/grafana:9.1.7"
         ports = ["grafana_ui"]
 
         volumes = [
@@ -98,11 +98,18 @@ EOH
         name     = "grafana"
         provider = "nomad"
         port     = "grafana_ui"
-        tags = [
+        tags     = [
           "traefik.enable=true",
           "traefik.http.routers.grafana.entrypoints=grafana",
           "traefik.http.routers.grafana.rule=PathPrefix(`/`)"
         ]
+
+        check {
+          type     = "http"
+          path     = "/api/health"
+          interval = "10s"
+          timeout  = "2s"
+        }
       }
     }
   }

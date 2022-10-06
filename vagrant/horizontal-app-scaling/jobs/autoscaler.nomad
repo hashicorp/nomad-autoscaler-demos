@@ -78,6 +78,13 @@ strategy "target-value" {
         name     = "autoscaler"
         provider = "nomad"
         port     = "http"
+
+        check {
+          type     = "http"
+          path     = "/v1/health"
+          interval = "3s"
+          timeout  = "1s"
+        }
       }
     }
 

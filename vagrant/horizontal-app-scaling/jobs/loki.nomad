@@ -76,6 +76,13 @@ EOH
         name     = "loki"
         provider = "nomad"
         port     = "loki"
+
+        check {
+          type     = "http"
+          path     = "/ready"
+          interval = "10s"
+          timeout  = "2s"
+        }
       }
     }
   }

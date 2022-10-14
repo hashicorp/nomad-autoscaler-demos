@@ -19,7 +19,7 @@ job "webapp" {
 
         check "avg_sessions" {
           source = "prometheus"
-          query  = "sum(traefik_entrypoint_open_connections{entrypoint=\"webapp\"})/scalar(nomad_nomad_job_summary_running{task_group=\"demo\"})"
+          query  = "sum(traefik_entrypoint_open_connections{entrypoint=\"webapp\"} OR on() vector(0))/scalar(nomad_nomad_job_summary_running{task_group=\"demo\"})"
 
           strategy "target-value" {
             target = 5

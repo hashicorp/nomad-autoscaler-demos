@@ -39,7 +39,7 @@ job "autoscaler" {
       # }
       #
       # artifact {
-      #   source      = "https://releases.hashicorp.com/nomad-autoscaler/0.3.2/nomad-autoscaler_0.3.2_linux_amd64.zip"
+      #   source      = "https://releases.hashicorp.com/nomad-autoscaler/0.3.7/nomad-autoscaler_0.3.7_linux_amd64.zip"
       #   destination = "/usr/local/bin"
       # }
 

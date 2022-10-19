@@ -5,7 +5,7 @@ job "traefik" {
     count = 1
 
     network {
-      port  "admin"{
+      port "admin" {
         static = 8081
       }
       port "grafana" {
@@ -14,7 +14,7 @@ job "traefik" {
       port "prometheus" {
         static = 9090
       }
-      port  "webapp"{
+      port "webapp" {
         static = 8000
       }
     }
@@ -23,7 +23,7 @@ job "traefik" {
       name     = "traefik-admin"
       provider = "nomad"
       port     = "admin"
-      tags     = [
+      tags = [
         "metrics"
       ]
 
@@ -41,7 +41,7 @@ job "traefik" {
         image        = "traefik:v2.9.1"
         ports        = ["admin", "grafana", "prometheus", "webapp"]
         network_mode = "host"
-        args         = [
+        args = [
           "--api.dashboard=true",
           "--api.insecure=true",
           "--entrypoints.grafana.address=:${NOMAD_PORT_grafana}",

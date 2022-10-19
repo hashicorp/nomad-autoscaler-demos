@@ -98,7 +98,7 @@ EOH
         name     = "grafana"
         provider = "nomad"
         port     = "grafana_ui"
-        tags     = [
+        tags = [
           "traefik.enable=true",
           "traefik.http.routers.grafana.entrypoints=grafana",
           "traefik.http.routers.grafana.rule=PathPrefix(`/`)"

@@ -15,7 +15,7 @@ job "autoscaler" {
       driver = "docker"
 
       config {
-        image   = "hashicorp/nomad-autoscaler:0.3.3"
+        image   = "hashicorp/nomad-autoscaler:0.3.7"
         command = "nomad-autoscaler"
         ports   = ["http"]
 
@@ -39,7 +39,7 @@ job "autoscaler" {
       # }
       #
       # artifact {
-      #   source      = "https://releases.hashicorp.com/nomad-autoscaler/0.3.2/nomad-autoscaler_0.3.2_linux_amd64.zip"
+      #   source      = "https://releases.hashicorp.com/nomad-autoscaler/0.3.7/nomad-autoscaler_0.3.7_linux_amd64.zip"
       #   destination = "/usr/local/bin"
       # }
 
@@ -75,8 +75,9 @@ strategy "target-value" {
       }
 
       service {
-        name = "autoscaler"
-        port = "http"
+        name     = "autoscaler"
+        provider = "nomad"
+        port     = "http"
 
         check {
           type     = "http"
@@ -96,7 +97,7 @@ strategy "target-value" {
       }
 
       config {
-        image = "grafana/promtail:1.5.0"
+        image = "grafana/promtail:2.6.1"
         ports = ["promtail"]
 
         args = [
@@ -115,11 +116,10 @@ positions:
   filename: /tmp/positions.yaml
 
 client:
-  url: http://{{ range $i, $s := service "loki" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}/api/prom/push
+  url: http://{{ range $i, $s := nomadService "loki" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}/api/prom/push
 
 scrape_configs:
 - job_name: system
-  entry_parser: raw
   static_configs:
   - targets:
       - localhost
@@ -151,15 +151,9 @@ EOH
       }
 
       service {
-        name = "promtail"
-        port = "promtail"
-
-        check {
-          type     = "http"
-          path     = "/ready"
-          interval = "10s"
-          timeout  = "2s"
-        }
+        name     = "promtail"
+        provider = "nomad"
+        port     = "promtail"
       }
     }
   }

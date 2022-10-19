@@ -17,9 +17,9 @@ job "webapp" {
       policy {
         cooldown = "20s"
 
-        check "avg_instance_sessions" {
+        check "avg_sessions" {
           source = "prometheus"
-          query  = "avg((haproxy_server_current_sessions{backend=\"http_back\"}) and (haproxy_server_up{backend=\"http_back\"} == 1))"
+          query  = "sum(traefik_entrypoint_open_connections{entrypoint=\"webapp\"} OR on() vector(0))/scalar(nomad_nomad_job_summary_running{exported_job=\"webapp\",task_group=\"demo\"})"
 
           strategy "target-value" {
             target = 5
@@ -93,8 +93,14 @@ tail -f /dev/null
       }
 
       service {
-        name = "webapp"
-        port = "toxiproxy_webapp"
+        name     = "webapp"
+        provider = "nomad"
+        port     = "toxiproxy_webapp"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.webapp.entrypoints=webapp",
+          "traefik.http.routers.webapp.rule=PathPrefix(`/`)"
+        ]
 
         check {
           type           = "http"

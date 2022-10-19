@@ -17,7 +17,7 @@ job "grafana" {
       driver = "docker"
 
       config {
-        image = "grafana/grafana:7.4.2"
+        image = "grafana/grafana:9.2.0"
         ports = ["grafana_ui"]
 
         volumes = [
@@ -40,7 +40,7 @@ datasources:
 - name: Prometheus
   type: prometheus
   access: proxy
-  url: http://{{ range $i, $s := service "prometheus" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}
+  url: http://{{ range $i, $s := nomadService "prometheus" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}
   isDefault: true
   version: 1
   editable: false
@@ -56,7 +56,7 @@ datasources:
 - name: Loki
   type: loki
   access: proxy
-  url: http://{{ range $i, $s := service "loki" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}
+  url: http://{{ range $i, $s := nomadService "loki" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}
   isDefault: false
   version: 1
   editable: false
@@ -95,8 +95,14 @@ EOH
       }
 
       service {
-        name = "grafana"
-        port = "grafana_ui"
+        name     = "grafana"
+        provider = "nomad"
+        port     = "grafana_ui"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.grafana.entrypoints=grafana",
+          "traefik.http.routers.grafana.rule=PathPrefix(`/`)"
+        ]
 
         check {
           type     = "http"

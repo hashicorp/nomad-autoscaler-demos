@@ -18,6 +18,14 @@ resource "aws_instance" "nomad_server" {
     delete_on_termination = "true"
   }
 
-  user_data            = data.template_file.user_data_server.rendered
+  user_data = templatefile(
+    "${path.module}/templates/user-data-server.sh", {
+      server_count  = var.server_count
+      region        = var.region
+      retry_join    = var.retry_join
+      consul_binary = var.consul_binary
+      nomad_binary  = var.nomad_binary
+    })
+
   iam_instance_profile = aws_iam_instance_profile.nomad_server.name
 }

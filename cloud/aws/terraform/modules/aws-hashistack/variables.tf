@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "stack_name" {
   description = "The name to prefix onto resources."
   type        = string

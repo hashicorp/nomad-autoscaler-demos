@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   hashistack_image_resource_group = var.hashistack_image_resource_group != "" ? var.hashistack_image_resource_group : azurerm_resource_group.hashistack.name
 }

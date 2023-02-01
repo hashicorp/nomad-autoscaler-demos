@@ -1,4 +1,7 @@
 #!/bin/bash
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 
 function net_getInterfaceAddress() {
   ip -4 address show "${1}" | awk '/inet / { print $2 }' | cut -d/ -f1

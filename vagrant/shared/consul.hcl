@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 datacenter       = "dc1"
 advertise_addr   = "127.0.0.1"
 client_addr      = "0.0.0.0"

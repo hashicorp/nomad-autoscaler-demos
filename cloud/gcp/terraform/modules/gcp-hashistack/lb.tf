@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "google_compute_forwarding_rule" "nomad_server" {
   name       = format("%s-4646", local.server_stack_name)
   region     = var.region

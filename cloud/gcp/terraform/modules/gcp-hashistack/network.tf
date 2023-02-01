@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "google_compute_router" "hashistack" {
   name    = local.stack_name
   region  = var.region

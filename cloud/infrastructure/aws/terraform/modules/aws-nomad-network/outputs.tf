@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Security groups.
 output "agents_sg_id" {
   value = aws_security_group.agents.id

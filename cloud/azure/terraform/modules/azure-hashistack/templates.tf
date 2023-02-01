@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 data "azurerm_subscription" "main" {}
 
 data "template_file" "user_data_server" {

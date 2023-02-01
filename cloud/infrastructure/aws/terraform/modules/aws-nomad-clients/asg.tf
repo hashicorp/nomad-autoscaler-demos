@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   name_prefix    = format("%s-%s", var.stack_name, var.nomad_node_class)
   load_balancers = var.load_balancer_names != [""] ? var.load_balancer_names : [""]

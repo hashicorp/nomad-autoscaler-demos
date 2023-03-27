@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "azurerm_network_security_group" "nomad_servers" {
   name                = "nomad-servers-sg"
   location            = azurerm_resource_group.hashistack.location

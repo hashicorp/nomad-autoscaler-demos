@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "azurerm_linux_virtual_machine" "servers" {
   count               = var.server_count
   name                = "server-${count.index + 1}"

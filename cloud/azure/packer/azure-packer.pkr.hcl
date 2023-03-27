@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "client_id" {}
 variable "client_secret" {}
 variable "resource_group" {}

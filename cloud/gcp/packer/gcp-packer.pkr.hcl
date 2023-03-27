@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "project_id" {}
 variable "image_name" { default = "hashistack" }
 variable "source_image" { default = "ubuntu-2004-focal-v20200720" }

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_launch_template" "nomad_client" {
   name_prefix            = "nomad-client"
   image_id               = var.ami

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "google_compute_instance" "nomad_server" {
   count        = var.server_count
   name         = local.server_stack_name

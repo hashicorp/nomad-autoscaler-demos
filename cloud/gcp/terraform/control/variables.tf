@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "org_id" {
   description = "The Google Cloud Platform organization where resources will be created."
   type        = string

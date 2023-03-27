@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 data "local_file" "grafana_dashboard" {
   filename = "${path.module}/files/grafana_dashboard.json"
 }

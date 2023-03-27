@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   zone_id             = format("%s-%s", var.region, var.zone)
   client_regional_mig = var.client_mig_type == "regional"

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 // Setup some default parameters, including data_dir which is required.
 datacenter = "dc1"
 data_dir   = "/opt/nomad"

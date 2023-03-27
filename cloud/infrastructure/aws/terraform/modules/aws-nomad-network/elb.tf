@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_elb" "servers" {
   name            = substr("${var.stack_name}-servers", 0, 32)
   instances       = var.server_ids

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   hashistack_image_project_id = var.hashistack_image_project_id != "" ? var.hashistack_image_project_id : var.project_id
 }

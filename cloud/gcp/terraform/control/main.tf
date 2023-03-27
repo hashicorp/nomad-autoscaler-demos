@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Providers
 provider "nomad" {
   address = module.hashistack_cluster.nomad_addr

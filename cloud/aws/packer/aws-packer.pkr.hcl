@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "created_email" {}
 variable "created_name" {}
 variable "region" { default = "us-east-1" }

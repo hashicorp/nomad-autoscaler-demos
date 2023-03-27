@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_elb" "nomad_server" {
   name               = "${var.stack_name}-nomad-server"
   availability_zones = distinct(aws_instance.nomad_server.*.availability_zone)

@@ -7,10 +7,11 @@ job "webapp" {
     network {
       port "webapp_http" {}
       port "toxiproxy_webapp" {}
+      port "toxiproxy_cli" {}
     }
 
-    scaling {
-      enabled = false
+     scaling {
+      enabled = true
       min     = 1
       max     = 20
 
@@ -26,15 +27,15 @@ job "webapp" {
           }
         }
       }
-    }
+    } 
 
     task "webapp" {
-      driver = "docker"
+      driver = "raw_exec"
 
-      config {
-        image = "hashicorp/demo-webapp-lb-guide"
-        ports = ["webapp_http"]
-      }
+    config {
+        command = "python3"
+        args    = ["-m", "http.server","${NOMAD_PORT_webapp_http}"]
+    }
 
       env {
         PORT    = "${NOMAD_PORT_webapp_http}"
@@ -56,39 +57,35 @@ job "webapp" {
       }
 
       config {
-        image      = "shopify/toxiproxy:2.1.4"
-        entrypoint = ["/entrypoint.sh"]
-        ports      = ["toxiproxy_webapp"]
+        image = "ghcr.io/shopify/toxiproxy:2.5.0"
+        args = [
+          "-host", "0.0.0.0",
+          "-port", "${NOMAD_PORT_toxiproxy}",
+          "-config", "${NOMAD_TASK_DIR}/config.json",
+        ]
 
-        volumes = [
-          "local/entrypoint.sh:/entrypoint.sh",
+        ports = [
+          "toxiproxy",
+          "toxiproxy_webapp",
         ]
       }
 
       template {
-        data = <<EOH
-#!/bin/sh
-
-set -ex
-
-/go/bin/toxiproxy -host 0.0.0.0  &
-
-while ! wget --spider -q http://localhost:8474/version; do
-  echo "toxiproxy not ready yet"
-  sleep 0.2
-done
-
-/go/bin/toxiproxy-cli create webapp -l 0.0.0.0:${NOMAD_PORT_toxiproxy_webapp} -u ${NOMAD_ADDR_webapp_http}
-/go/bin/toxiproxy-cli toxic add -n latency -t latency -a latency=1000 -a jitter=500 webapp
-tail -f /dev/null
-        EOH
-
-        destination = "local/entrypoint.sh"
-        perms       = "755"
+        data        = <<EOF
+[
+  {
+    "name": "webapp",
+    "listen": "0.0.0.0:{{env "NOMAD_PORT_toxiproxy_webapp"}}",
+    "upstream": "{{env "NOMAD_ADDR_webapp_http"}}",
+    "enabled": true
+  }
+]
+EOF
+        destination = "${NOMAD_TASK_DIR}/config.json"
       }
 
       resources {
-        cpu    = 100
+        cpu    = 50
         memory = 32
       }
 
@@ -109,6 +106,35 @@ tail -f /dev/null
           timeout        = "3s"
           initial_status = "passing"
         }
+      }
+    }
+
+    task "toxiproxy-config" {
+      driver = "docker"
+
+      lifecycle {
+        hook    = "prestart"
+        sidecar = false
+      }
+
+      restart {
+        attempts = 50
+        delay    = "1s"
+        mode     = "delay"
+      }
+
+      config {
+        image      = "ghcr.io/shopify/toxiproxy:2.5.0"
+        entrypoint = ["/toxiproxy-cli"]
+        args = [
+          "--host", "${NOMAD_ADDR_toxiproxy_cli}",
+          "toxic", "add",
+          "--toxicName", "latency",
+          "--type", "latency",
+          "--attribute", "latency=1000",
+          "--attribute", "jitter=500",
+          "webapp",
+        ]
       }
     }
   }

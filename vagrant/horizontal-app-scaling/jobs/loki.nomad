@@ -12,7 +12,7 @@ job "loki" {
       driver = "docker"
 
       config {
-        image = "grafana/loki:2.6.1"
+        image = "grafana/loki:2.8.2"
         ports = ["loki"]
 
         args = [

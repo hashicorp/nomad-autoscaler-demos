@@ -23,6 +23,12 @@ plugin "docker" {
   }
 }
 
+plugin "raw_exec" {
+  config {
+    enabled = true
+  }
+}
+
 telemetry {
   publish_allocation_metrics = true
   publish_node_metrics       = true

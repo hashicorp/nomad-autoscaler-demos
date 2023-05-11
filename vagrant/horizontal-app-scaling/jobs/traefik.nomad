@@ -41,9 +41,9 @@ job "traefik" {
     task "server" {
       driver = "docker"
       config {
-        image        = "traefik:v2.9.1"
+        image        = "traefik:v3.0"
         ports        = ["admin", "grafana", "prometheus", "webapp"]
-        network_mode = "host"
+
         args = [
           "--api.dashboard=true",
           "--api.insecure=true",
@@ -56,7 +56,7 @@ job "traefik" {
           "--ping=true",
           "--providers.nomad=true",
           "--providers.nomad.exposedByDefault=false",
-          "--providers.nomad.endpoint.address=http://${attr.unique.network.ip-address}:4646"
+          "--providers.nomad.endpoint.address=http://host.docker.internal:4646"
         ]
       }
     }

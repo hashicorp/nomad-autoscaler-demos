@@ -13,22 +13,18 @@ job "prometheus" {
 
     task "prometheus" {
       driver = "docker"
-
+     // network_mode = "host"
       config {
-        image = "prom/prometheus:v2.38.0"
+        image = "prom/prometheus:v2.37.8"
         ports = ["prometheus_ui"]
 
-        # Use `host` network so we can communicate with the Nomad
-        # agents running in the host and scrape their metrics.
-        network_mode = "host"
-
-        args = [
-          "--config.file=/etc/prometheus/config/prometheus.yml",
+         args = [
+          "--config.file=${NOMAD_TASK_DIR}/config/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
           "--web.listen-address=0.0.0.0:${NOMAD_PORT_prometheus_ui}",
           "--web.console.libraries=/usr/share/prometheus/console_libraries",
           "--web.console.templates=/usr/share/prometheus/consoles",
-        ]
+        ] 
 
         volumes = [
           "local/config:/etc/prometheus/config",
@@ -45,7 +41,7 @@ global:
 scrape_configs:
   - job_name: 'nomad_sd'
     nomad_sd_configs:
-      - server: 'http://{{ env "attr.unique.network.ip-address" }}:4646'
+      - server: 'http://host.docker.internal:4646'
     relabel_configs:
       - source_labels: ['__meta_nomad_tags']
         regex: '(.*),metrics,(.*)'
@@ -63,7 +59,7 @@ scrape_configs:
     params:
       format: ['prometheus']
     static_configs:
-    - targets: ['{{ env "attr.unique.network.ip-address" }}:4646']
+    - targets: [host.docker.internal:4646]
 EOH
 
         change_mode   = "signal"

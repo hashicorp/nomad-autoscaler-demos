@@ -11,22 +11,17 @@ job "grafana" {
       port "grafana_ui" {}
     }
 
-    volume "grafana" {
-      type   = "host"
-      source = "grafana"
-    }
-
     task "grafana" {
       driver = "docker"
 
       config {
-        image = "grafana/grafana:9.2.0"
+        image = "grafana/grafana:9.5.2"
         ports = ["grafana_ui"]
 
         volumes = [
           "local/datasources:/etc/grafana/provisioning/datasources",
           "local/dashboards:/etc/grafana/provisioning/dashboards",
-          "/home/vagrant/nomad-autoscaler/files:/var/lib/grafana/dashboards",
+          "~/go/src/github.com/hashicorp/nomad-autoscaler-demos/vagrant/horizontal-app-scaling/files:/var/lib/grafana/dashboards",
         ]
       }
 
@@ -87,14 +82,9 @@ EOH
         destination = "local/dashboards/nomad-autoscaler.yaml"
       }
 
-      volume_mount {
-        volume      = "grafana"
-        destination = "/var/lib/grafana"
-      }
-
       resources {
         cpu    = 100
-        memory = 64
+        memory = 128
       }
 
       service {
@@ -107,12 +97,12 @@ EOH
           "traefik.http.routers.grafana.rule=PathPrefix(`/`)"
         ]
 
-        check {
+         check {
           type     = "http"
           path     = "/api/health"
           interval = "10s"
           timeout  = "2s"
-        }
+        } 
       }
     }
   }

@@ -12,7 +12,7 @@ job "prometheus" {
       driver = "docker"
      // network_mode = "host"
       config {
-        image = "prom/prometheus:latest"
+        image = "prom/prometheus:v2.37.8"
         ports = ["prometheus_ui"]
 
          args = [

@@ -12,13 +12,13 @@ job "grafana" {
       driver = "docker"
 
       config {
-        image = "grafana/grafana:9.5.1"
+        image = "grafana/grafana:9.5.2"
         ports = ["grafana_ui"]
 
         volumes = [
           "local/datasources:/etc/grafana/provisioning/datasources",
           "local/dashboards:/etc/grafana/provisioning/dashboards",
-          "/Users/juanita.delacuestamorales/go/src/github.com/hashicorp/nomad-autoscaler-demos/vagrant/horizontal-app-scaling/files:/var/lib/grafana/dashboards",
+          "~/go/src/github.com/hashicorp/nomad-autoscaler-demos/vagrant/horizontal-app-scaling/files:/var/lib/grafana/dashboards",
         ]
       }
 

@@ -7,10 +7,10 @@ job "webapp" {
     network {
       port "webapp_http" {}
       port "toxiproxy_webapp" {}
-      port "toxiproxy_cli" {}
+      port "toxiproxy" {}
     }
 
-     scaling {
+    scaling {
       enabled = true
       min     = 1
       max     = 20
@@ -27,7 +27,7 @@ job "webapp" {
           }
         }
       }
-    } 
+    }
 
     task "webapp" {
       driver = "raw_exec"
@@ -127,7 +127,7 @@ EOF
         image      = "ghcr.io/shopify/toxiproxy:2.5.0"
         entrypoint = ["/toxiproxy-cli"]
         args = [
-          "--host", "${NOMAD_ADDR_toxiproxy_cli}",
+          "--host", "${NOMAD_ADDR_toxiproxy}",
           "toxic", "add",
           "--toxicName", "latency",
           "--type", "latency",

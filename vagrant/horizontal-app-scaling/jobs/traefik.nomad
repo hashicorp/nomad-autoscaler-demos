@@ -38,9 +38,9 @@ job "traefik" {
     task "server" {
       driver = "docker"
       config {
-        image        = "arm64v8/traefik:2.10"
+        image        = "arm64v8/traefik"
         ports        = ["admin", "grafana", "prometheus", "webapp"]
-
+     //   network_mode = "host"
         args = [
           "--api.dashboard=true",
           "--api.insecure=true",

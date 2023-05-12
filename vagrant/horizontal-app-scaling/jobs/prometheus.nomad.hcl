@@ -15,7 +15,7 @@ job "prometheus" {
       driver = "docker"
 
       config {
-        image = "prom/prometheus:v2.38.0"
+        image = "prom/prometheus:v2.42.0"
         ports = ["prometheus_ui"]
 
         # Use `host` network so we can communicate with the Nomad

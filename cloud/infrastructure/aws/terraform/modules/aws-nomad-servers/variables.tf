@@ -33,7 +33,7 @@ variable "subnet_ids" {
 }
 
 # Optional variables.
-variable "consul_binary_url" {
+variable "consul_binary" {
   type        = string
   default     = ""
   description = "The URL that points to the Consul binary to be used."
@@ -51,7 +51,7 @@ variable "instance_type" {
   description = "EC2 instance type to use for new instances."
 }
 
-variable "nomad_binary_url" {
+variable "nomad_binary" {
   type        = string
   default     = ""
   description = "The URL that points to the Nomad binary to be used."

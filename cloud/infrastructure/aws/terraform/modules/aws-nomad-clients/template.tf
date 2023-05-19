@@ -1,4 +1,4 @@
-# Copyright (c) HashiCorp, Inc.
+/* # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
 data "template_file" "user_data" {
@@ -12,3 +12,4 @@ data "template_file" "user_data" {
     datacenter    = var.nomad_datacenter
   }
 }
+ */

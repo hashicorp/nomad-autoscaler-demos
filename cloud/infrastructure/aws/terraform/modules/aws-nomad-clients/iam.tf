@@ -22,6 +22,7 @@ data "aws_iam_policy_document" "clients" {
       "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:UpdateAutoScalingGroup",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
+      "autoscaling:DescribeInstanceRefreshes",
       "ec2:DescribeInstances",
     ]
     resources = ["*"]

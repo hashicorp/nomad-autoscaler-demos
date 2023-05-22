@@ -7,6 +7,12 @@ variable "ami_id" {
   description = "The AMI ID to use when launching new instances."
 }
 
+variable "region" {
+  description = "The AWS region to deploy into."
+  type        = string
+  default     = "us-east-1"
+}
+
 variable "key_name" {
   type        = string
   description = "The SSH key name used to access instances."
@@ -33,7 +39,7 @@ variable "subnet_ids" {
 }
 
 # Optional variables.
-variable "consul_binary_url" {
+variable "consul_binary" {
   type        = string
   default     = ""
   description = "The URL that points to the Consul binary to be used."
@@ -81,7 +87,7 @@ variable "nomad_node_class" {
   description = "Node class associated with the Nomad clients provisioned by this module."
 }
 
-variable "nomad_binary_url" {
+variable "nomad_binary" {
   type        = string
   default     = ""
   description = "The URL that points to the Nomad binary to be used."

@@ -10,7 +10,13 @@ resource "aws_instance" "servers" {
   subnet_id              = element(var.subnet_ids, count.index)
   vpc_security_group_ids = var.security_group_ids
   iam_instance_profile   = aws_iam_instance_profile.servers.name
-  user_data              = data.template_file.user_data.rendered
+  user_data              = templatefile(
+    "${path.module}/templates/user-data.sh.tpl", {
+      server_count  = var.instance_count
+      retry_join    = var.retry_join
+      consul_binary = var.consul_binary
+      nomad_binary  = var.nomad_binary
+    })
 
   root_block_device {
     volume_type           = "gp2"

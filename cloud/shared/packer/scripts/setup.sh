@@ -18,7 +18,7 @@ cd /ops
 # Dependencies
 sudo apt-get update
 
-sudo apt-get install -y software-properties-common unzip tree redis-tools jq curl tmux
+sudo apt-get install -y software-properties-common unzip tree redis-tools jq curl tmux dnsmasq
 
 CONFIGDIR=/ops/config
 

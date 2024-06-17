@@ -1,9 +1,19 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+packer {
+  required_version = ">= 1.11.0, < 2.0.0"
+  required_plugins {
+    googlecompute = {
+      source  = "github.com/hashicorp/googlecompute"
+      version = "~> 1"
+    }
+  }
+}
+
 variable "project_id" {}
 variable "image_name" { default = "hashistack" }
-variable "source_image" { default = "ubuntu-2004-focal-v20200720" }
+variable "source_image" { default = "ubuntu-2004-focal-v20240519" }
 variable "ssh_username" { default = "ubuntu" }
 variable "zone" { default = "us-central1-a" }
 

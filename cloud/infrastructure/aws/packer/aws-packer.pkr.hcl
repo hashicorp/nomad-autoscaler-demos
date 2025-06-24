@@ -14,15 +14,15 @@ source "amazon-ebs" "hashistack" {
 
   associate_public_ip_address = true
 
-  source_ami_filter {
-    filters = {
-      virtualization-type = "hvm"
-      name                = "ubuntu/images/*ubuntu-focal-20.04-amd64-server-*"
-      root-device-type    = "ebs"
-    }
-    owners      = ["099720109477"] # Canonical's owner ID
-    most_recent = true
+ source_ami_filter {
+  filters = {
+    virtualization-type = "hvm"
+    name                = "ubuntu/images/*ubuntu-noble-24.04-amd64-server-*"
+    root-device-type    = "ebs"
   }
+  owners      = ["099720109477"] # Canonical's official AWS account ID
+  most_recent = true
+}
 
   communicator = "ssh"
   ssh_username = "ubuntu"

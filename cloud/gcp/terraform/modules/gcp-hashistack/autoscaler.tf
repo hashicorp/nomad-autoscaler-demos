@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 data "template_file" "nomad_autoscaler_jobspec" {
   template = file("${path.module}/templates/gcp_autoscaler.nomad.tpl")
 

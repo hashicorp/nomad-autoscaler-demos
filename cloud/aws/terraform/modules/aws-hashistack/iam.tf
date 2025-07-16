@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_iam_instance_profile" "nomad_server" {
   name_prefix = var.stack_name
   role        = aws_iam_role.nomad_server.name

@@ -1,4 +1,7 @@
 #!/bin/bash
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 
 set -e
 
@@ -41,6 +44,7 @@ curl -sL -o consul.zip ${CONSULDOWNLOAD}
 
 ## Install
 sudo unzip -o consul.zip -o -d /usr/local/bin
+
 sudo chmod 0755 /usr/local/bin/consul
 sudo chown root:root /usr/local/bin/consul
 

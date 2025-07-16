@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "owner_email" {}
 variable "owner_name" {}
 variable "region" {}

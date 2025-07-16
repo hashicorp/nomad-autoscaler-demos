@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "azurerm_virtual_network" "primary" {
   name                = "virtual-network"
   address_space       = ["10.0.0.0/16"]

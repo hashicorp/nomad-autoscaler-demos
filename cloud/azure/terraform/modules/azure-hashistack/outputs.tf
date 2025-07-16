@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 output "server_public_ips" {
   value = azurerm_linux_virtual_machine.servers.*.public_ip_address
 }

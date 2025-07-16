@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "google_compute_instance_template" "nomad_client" {
   name         = local.client_stack_name
   machine_type = var.client_machine_type

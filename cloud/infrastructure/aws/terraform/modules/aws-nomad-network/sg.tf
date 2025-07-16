@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_security_group" "agents" {
   name_prefix = "${var.stack_name}-agents"
   vpc_id      = aws_vpc.main.id

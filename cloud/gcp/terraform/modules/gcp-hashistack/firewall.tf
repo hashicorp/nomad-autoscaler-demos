@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "google_compute_firewall" "nomad_consul_generic" {
   name    = format("%s-allow-consul-nomad", local.stack_name)
   network = google_compute_network.hashistack.name

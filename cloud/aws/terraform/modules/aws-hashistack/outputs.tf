@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 output "server_tag_name" {
   value = aws_instance.nomad_server.*.tags.Name
 }

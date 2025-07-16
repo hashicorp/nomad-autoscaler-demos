@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   rendered_template = templatefile(
     "${path.module}/templates/aws_autoscaler.nomad.tpl", {

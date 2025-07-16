@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   build_image = var.ami_id == ""
   image       = local.build_image ? data.aws_ami.built[0] : data.aws_ami.existing[0]

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_instance" "nomad_server" {
   ami                    = var.ami
   instance_type          = var.server_instance_type

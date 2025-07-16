@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   name_prefix    = format("%s-%s", var.stack_name, var.nomad_node_class)
   load_balancers = var.load_balancer_names != [""] ? var.load_balancer_names : [""]
@@ -9,7 +12,15 @@ resource "aws_launch_template" "clients" {
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = var.security_group_ids
-  user_data              = base64encode(data.template_file.user_data.rendered)
+  user_data              = base64encode(templatefile(
+    "${path.module}/templates/user-data.sh.tpl", {
+      region        = var.region
+      retry_join    = var.retry_join
+      consul_binary = var.consul_binary
+      nomad_binary  = var.nomad_binary
+      node_class    = var.nomad_node_class
+      datacenter    = var.nomad_datacenter
+    }))
 
   iam_instance_profile {
     name = aws_iam_instance_profile.clients.name

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect  = "Allow"
@@ -19,6 +22,7 @@ data "aws_iam_policy_document" "clients" {
       "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:UpdateAutoScalingGroup",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
+      "autoscaling:DescribeInstanceRefreshes",
       "ec2:DescribeInstances",
     ]
     resources = ["*"]

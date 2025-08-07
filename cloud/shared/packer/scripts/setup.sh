@@ -43,7 +43,7 @@ sudo ufw disable || echo "ufw not installed"
 curl -sL -o consul.zip ${CONSULDOWNLOAD}
 
 ## Install
-sudo unzip -o consul.zip -o -d /usr/local/bin
+sudo unzip -o consul.zip -d /usr/local/bin
 
 sudo chmod 0755 /usr/local/bin/consul
 sudo chown root:root /usr/local/bin/consul

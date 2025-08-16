@@ -1,6 +1,6 @@
 # Nomad Autoscaler Demos
 
-This repository hosts a series of demos for the [Nomad Autoscaler][nomad_autoscaler_repo].
+This repository hosts a series of demos for the [Nomad Autoscaler][nomad_autoscaler_repo].  Forked 2025-08-16.
 
 ## List of demos
 

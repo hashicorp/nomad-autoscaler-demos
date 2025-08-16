@@ -5,6 +5,7 @@ provider "registry.terraform.io/hashicorp/aws" {
   version     = "2.70.4"
   constraints = "~> 2.65"
   hashes = [
+    "h1:fwO3LaxgxDu0tiFDiRIIeyPG/tAbmdIpYjytSdHzwQk=",
     "h1:lslhOgktnvbh66VCd8cJPr590U1HRb8Z+436lPsnHL8=",
     "zh:45f528103c5580623b15e7ac3986b72baa5d33cabc66c902594d666c7607a8f2",
     "zh:538793ad294171370cc0c280c98cb5c8eb77669d0917c2ab727090016ec2626e",
@@ -27,6 +28,7 @@ provider "registry.terraform.io/hashicorp/local" {
   version = "2.3.0"
   hashes = [
     "h1:7y8CXQKtfyvrMCSWgCkCclNN9L161u6jO1dEGVaB5RQ=",
+    "h1:U+DbBqKnXSIqC2z7qIko2dy8w6wwuZd89orPvfeqHk0=",
     "zh:1f1920b3f78c31c6b69cdfe1e016a959667c0e2d01934e1a084b94d5a02cd9d2",
     "zh:550a3cdae0ddb350942624e7b2e8b31d28bc15c20511553432413b1f38f4b214",
     "zh:68d1d9ccbfce2ce56b28a23b22833a5369d4c719d6d75d50e101a8a8dbe33b9b",
@@ -46,6 +48,7 @@ provider "registry.terraform.io/hashicorp/nomad" {
   version     = "1.4.19"
   constraints = ">= 1.4.6"
   hashes = [
+    "h1:Pj+LeWXHK1ejOKxIMN7k6kX5uK7lD6P1gmflX3vhs3M=",
     "h1:cUd0oNqbdTQLSKmfwYFksNt3aVgq03vOAzUMoAKGLWw=",
     "zh:2f3ceeb3318a6304026035b0ac9ee3e52df04913bb9ee78827e58c5398b41254",
     "zh:3fbe76c7d957d20dfe3c8c0528b33084651f22a95be9e0452b658e0922916e2a",
@@ -66,6 +69,7 @@ provider "registry.terraform.io/hashicorp/null" {
   version = "3.2.1"
   hashes = [
     "h1:tSj1mL6OQ8ILGqR2mDu7OYYYWf+hoir0pf9KAQ8IzO8=",
+    "h1:ydA0/SNRVB1o95btfshvYsmxA+jZFRZcvKzZSB+4S1M=",
     "zh:58ed64389620cc7b82f01332e27723856422820cfd302e304b5f6c3436fb9840",
     "zh:62a5cc82c3b2ddef7ef3a6f2fedb7b9b3deff4ab7b414938b08e51d6e8be87cb",
     "zh:63cff4de03af983175a7e37e52d4bd89d990be256b16b5c7f919aff5ad485aa5",
@@ -84,6 +88,7 @@ provider "registry.terraform.io/hashicorp/null" {
 provider "registry.terraform.io/hashicorp/random" {
   version = "3.4.3"
   hashes = [
+    "h1:saZR+mhthL0OZl4SyHXZraxyaBNVMxiZzks78nWcZ2o=",
     "h1:tL3katm68lX+4lAncjQA9AXL4GR/VM+RPwqYf4D2X8Q=",
     "zh:41c53ba47085d8261590990f8633c8906696fa0a3c4b384ff6a7ecbf84339752",
     "zh:59d98081c4475f2ad77d881c4412c5129c56214892f490adf11c7e7a5a47de9b",

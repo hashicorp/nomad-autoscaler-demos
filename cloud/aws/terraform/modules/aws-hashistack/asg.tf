@@ -16,6 +16,13 @@ resource "aws_launch_template" "nomad_client" {
       node_class    = "hashistack"
     }))
 
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+    instance_metadata_tags      = "enabled"
+  }
+
   iam_instance_profile {
     name = aws_iam_instance_profile.nomad_client.name
   }

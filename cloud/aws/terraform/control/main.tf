@@ -28,14 +28,16 @@ module "my_ip_address" {
 module "hashistack_cluster" {
   source = "../modules/aws-hashistack"
 
-  owner_name         = var.owner_name
-  owner_email        = var.owner_email
-  region             = var.region
-  availability_zones = var.availability_zones
-  ami                = var.ami
-  key_name           = var.key_name
-  allowlist_ip       = ["${module.my_ip_address.stdout}/32"]
-  stack_name         = var.stack_name
+  region                = var.region
+  availability_zones    = var.availability_zones
+  ami                   = var.ami
+  key_name              = var.key_name
+  owner_name            = var.owner_name
+  owner_email           = var.owner_email
+  stack_name            = var.stack_name
+  allowlist_ip          = ["${module.my_ip_address.stdout}/32"]
+  server_instance_type  = var.server_instance_type
+  client_instance_type  = var.client_instance_type
 }
 
 module "hashistack_jobs" {

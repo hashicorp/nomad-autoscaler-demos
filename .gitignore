@@ -19,4 +19,7 @@
 
 # Cleanup files
 .cleanup*
+.DS_Store
+.terraform.lock.hcl
 cloud/aws/terraform/control/.terraform.lock.hcl
+cloud/aws/terraform/control/describe-instances.out

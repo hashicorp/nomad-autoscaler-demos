@@ -1,4 +1,6 @@
 #!/bin/bash
+echo -e "\nInstalling SERVER...\n"
+
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
@@ -37,6 +39,7 @@ sed -i "s/RETRY_JOIN/$RETRY_JOIN/g" $CONFIGDIR/consul.hcl
 sudo cp $CONFIGDIR/consul.hcl $CONSULCONFIGDIR
 sudo cp $CONFIGDIR/consul_$CLOUD.service /etc/systemd/system/consul.service
 
+sudo systemctl enable consul
 sudo systemctl start consul.service
 sleep 10
 export CONSUL_HTTP_ADDR=$IP_ADDRESS:8500
@@ -56,6 +59,7 @@ sed -i "s/SERVER_COUNT/$SERVER_COUNT/g" $CONFIGDIR/nomad.hcl
 sudo cp $CONFIGDIR/nomad.hcl $NOMADCONFIGDIR
 sudo cp $CONFIGDIR/nomad.service /etc/systemd/system/nomad.service
 
+sudo systemctl enable nomad
 sudo systemctl start nomad.service
 sleep 10
 export NOMAD_ADDR=http://$IP_ADDRESS:4646
@@ -64,6 +68,7 @@ export NOMAD_ADDR=http://$IP_ADDRESS:4646
 echo "127.0.0.1 $(hostname)" | sudo tee --append /etc/hosts
 
 # dnsmasq config
+echo -e "\nConfiguring DNSMASQ...\n"
 echo "DNSStubListener=no" | sudo tee -a /etc/systemd/resolved.conf
 sudo cp /ops/config/10-consul.dnsmasq /etc/dnsmasq.d/10-consul
 sudo cp /ops/config/99-default.dnsmasq.$CLOUD /etc/dnsmasq.d/99-default
@@ -78,17 +83,12 @@ echo "nameserver $DOCKER_BRIDGE_IP_ADDRESS" | sudo tee /etc/resolv.conf.new
 cat /etc/resolv.conf | sudo tee --append /etc/resolv.conf.new
 sudo mv /etc/resolv.conf.new /etc/resolv.conf
 
-# Set /opt permissions
-sudo find /opt -type d -exec chmod g+s {} \\;
-sudo chown -R root:ubuntu /opt
-sudo chmod -R g+rX /opt
-
 # Set env vars for tool CLIs
 echo "export CONSUL_RPC_ADDR=$IP_ADDRESS:8400" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export CONSUL_HTTP_ADDR=$IP_ADDRESS:8500" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export NOMAD_ADDR=http://$IP_ADDRESS:4646" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre"  | sudo tee --append /home/$HOME_DIR/.bashrc
-echo "alias env='env -0 | tr "\0" "\n" | sort'" | sudo tee --append /home/$HOME_DIR/.bashrc
+
 
 # set terminal color
 echo "export TERM=xterm-256color" | sudo tee --append /home/$HOME_DIR/.bashrc

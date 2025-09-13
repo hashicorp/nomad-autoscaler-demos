@@ -1,4 +1,19 @@
 #!/bin/bash
+set -Eeuo pipefail
+
+LOG_FILE=/var/log/provision.log
+if [[ -z "${_PROVISION_LOG_INITIALIZED:-}" ]]; then
+  sudo install -o "$(id -u)" -g "$(id -g)" -m 0644 /dev/null "$LOG_FILE" || true
+  exec > >(tee -a "$LOG_FILE")
+  exec 2>&1
+  export _PROVISION_LOG_INITIALIZED=1
+fi
+log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"; }
+
+log "Starting server.sh"
+trap 'log "server.sh failed (exit code $?)"' ERR
+trap 'log "Finished server.sh"' EXIT
+
 echo -e "\nInstalling SERVER...\n"
 
 # Copyright (c) HashiCorp, Inc.
@@ -108,3 +123,5 @@ EOF
 else
   echo "[INFO] PS1 block already in .bashrc."
 fi
+
+log "Finished server.sh"

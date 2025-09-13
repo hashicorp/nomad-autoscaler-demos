@@ -1,9 +1,17 @@
 #!/bin/bash
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
+set -Eeuo pipefail
 
-
-set -e
+# --- unified logging (console + packer.log + local file) ---
+LOG_FILE=/var/log/provision.log
+if [[ -z "${_PROVISION_LOG_INITIALIZED:-}" ]]; then
+  sudo install -o "$(id -u)" -g "$(id -g)" -m 0644 /dev/null "$LOG_FILE" || true
+  exec > >(tee -a "$LOG_FILE")
+  exec 2>&1
+  export _PROVISION_LOG_INITIALIZED=1
+fi
+log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"; }
+log "Starting setup.sh"
+trap 'log "setup.sh failed (exit code $?)"' ERR
 
 echo "Waiting for cloud-init to update /etc/apt/sources.list"
 timeout 180 /bin/bash -c \
@@ -118,4 +126,7 @@ fi
 sudo mkdir -p ${CNIDIR}/bin
 sudo tar -C ${CNIDIR}/bin -xzf cni-plugins.tgz
 
+# (single) restore debconf frontend to Dialog (duplicate removed)
 echo 'debconf debconf/frontend select Dialog' | sudo debconf-set-selections
+
+log "Finished setup.sh"

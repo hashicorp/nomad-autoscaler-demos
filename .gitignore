@@ -17,10 +17,9 @@
 # Terraform vars file
 # terraform.tfvars
 
-# Cleanup files
+# Cleanup files & others
 .cleanup*
 .DS_Store
 .terraform.lock.hcl
 cloud/aws/terraform/control/.terraform.lock.hcl
 *.out
-*.log

@@ -104,24 +104,12 @@ echo "export CONSUL_HTTP_ADDR=$IP_ADDRESS:8500" | sudo tee --append /home/$HOME_
 echo "export NOMAD_ADDR=http://$IP_ADDRESS:4646" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre"  | sudo tee --append /home/$HOME_DIR/.bashrc
 
+# set alias
+alias env="env -0 | sort -z | tr '\0' '\n'"
 
 # set terminal color
 echo "export TERM=xterm-256color" | sudo tee --append /home/$HOME_DIR/.bashrc
-# set terminal prompt
-local marker="# >>> custom WarpTerminal PS1 block >>>"
-if ! grep -Fq "$marker" ~/.bashrc; then
-  cat <<'EOF' >> ~/.bashrc
-# >>> custom WarpTerminal PS1 block >>>
-if [[ $TERM_PROGRAM == "WarpTerminal" ]]; then
-  PS1="\[\033[0;33m\](\$PROMPTID)[Int: \$PRIIP / Ext: \$PUBIP] \[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
-else
-  PS1="\[\033[0;33m\](\$PROMPTID)[Int: \$PRIIP / Ext: \$PUBIP]\[\033[0m\]\n\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
-fi
-# <<< custom WarpTerminal PS1 block <<<
-EOF
-  echo "[INFO] Appended PS1 block to .bashrc."
-else
-  echo "[INFO] PS1 block already in .bashrc."
-fi
+
+source $SCRIPTDIR/set-prompt.sh
 
 log "Finished server.sh"

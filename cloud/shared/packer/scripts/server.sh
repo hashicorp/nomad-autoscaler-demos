@@ -110,6 +110,4 @@ alias env="env -0 | sort -z | tr '\0' '\n'"
 # set terminal color
 echo "export TERM=xterm-256color" | sudo tee --append /home/$HOME_DIR/.bashrc
 
-source $SCRIPTDIR/set-prompt.sh
-
 log "Finished server.sh"

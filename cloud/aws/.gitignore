@@ -1,1 +1,2 @@
 aws_autoscaler.nomad
+*.out

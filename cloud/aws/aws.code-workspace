@@ -2,7 +2,7 @@
 	"folders": [
     {
       "name": "aws",
-      "path": "."
+      "path": "../aws"
     },
     {
       "name": "shared-autosc",
@@ -15,6 +15,9 @@
     {
       "name": "support-shared",
       "path": "../../../../../../1-support/shared"
+    },
+    {
+      "path": "../.."
     }
   ],
 }

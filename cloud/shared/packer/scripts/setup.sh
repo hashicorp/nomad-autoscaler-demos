@@ -22,6 +22,9 @@ export DEBIAN_FRONTEND=noninteractive
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
 cd /ops
+# Define shared/script directories (missing before)
+SHAREDDIR=/ops
+SCRIPTDIR=$SHAREDDIR/scripts
 
 # Dependencies
 sudo apt-get update
@@ -128,5 +131,24 @@ sudo tar -C ${CNIDIR}/bin -xzf cni-plugins.tgz
 
 # (single) restore debconf frontend to Dialog (duplicate removed)
 echo 'debconf debconf/frontend select Dialog' | sudo debconf-set-selections
+
+# Ensure prompt script runs only from setup.sh and only once
+PROMPT_MARKER=/etc/.custom_prompt_set
+if [[ -f "$SCRIPTDIR/set-prompt.sh" ]]; then
+  if [[ ! -f "$PROMPT_MARKER" ]]; then
+    sudo chmod +x "$SCRIPTDIR/set-prompt.sh"
+    # Run with sudo (visible as: sudo $SCRIPTDIR/set-prompt.sh)
+    sudo "$SCRIPTDIR/set-prompt.sh" || true
+    # Also source so prompt/env changes apply to this shell
+    # shellcheck source=/dev/null
+    source "$SCRIPTDIR/set-prompt.sh"
+    sudo touch "$PROMPT_MARKER"
+    log "Applied set-prompt.sh (executed + sourced)"
+  else
+    log "Skipping set-prompt.sh (already applied)"
+  fi
+else
+  log "Skipping set-prompt.sh (not found at $SCRIPTDIR/set-prompt.sh)"
+fi
 
 log "Finished setup.sh"

@@ -15,9 +15,6 @@
     {
       "name": "support-shared",
       "path": "../../../../../../1-support/shared"
-    },
-    {
-      "path": "../.."
     }
   ],
 }

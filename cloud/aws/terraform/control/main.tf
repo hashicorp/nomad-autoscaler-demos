@@ -38,6 +38,8 @@ module "hashistack_cluster" {
   allowlist_ip          = ["${module.my_ip_address.stdout}/32"]
   server_instance_type  = var.server_instance_type
   client_instance_type  = var.client_instance_type
+  server_count          = var.server_count
+  client_count          = var.client_count
 }
 
 module "hashistack_jobs" {

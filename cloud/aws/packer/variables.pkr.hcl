@@ -6,8 +6,8 @@
 
 variable "created_email" { default = "mikael.sikora@hashicorp.com" }
 variable "created_name"  { default = "mikael_sikora"}
-variable "region"        { default = "us-east-1" }
-variable "name_prefix"   { default = "autosc-mws" }
+variable "region"        { default = "us-west-2" }
+variable "name_prefix"   { default = "scale-mws" }
 variable "architecture"  { default = "amd64" }
 variable "os"            { default = "Ubuntu" }
 variable "os_version"    { default = "24.04" }

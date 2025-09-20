@@ -20,13 +20,13 @@ variable "owner_email" {
 variable "region" {
   description = "The AWS region to deploy into."
   type        = string
-  default     = "us-east-1"
+  default     = "us-west-2"
 }
 
 variable "availability_zones" {
   description = "The AWS region AZs to deploy into."
   type        = list(string)
-  default     = ["us-east-1a"]
+  default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
 }
 
 variable "vpc_id" {

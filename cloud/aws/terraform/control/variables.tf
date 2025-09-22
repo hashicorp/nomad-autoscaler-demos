@@ -36,8 +36,9 @@ variable "vpc_id" {
 }
 
 variable "ami" {
-  description = "The AMI to use, preferably built by the supplied Packer scripts."
+  description = "The AMI to use, preferably built by the supplied Packer scripts. If left empty, a new AMI will be built automatically."
   type        = string
+  default     = ""
 }
 
 variable "key_name" {

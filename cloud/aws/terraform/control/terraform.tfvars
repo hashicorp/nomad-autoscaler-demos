@@ -1,6 +1,6 @@
 region                  = "us-west-2"
 availability_zones      = ["us-west-2a", "us-west-2b", "us-west-2c"]
-ami                     = "ami-0eafb2a149534a110"  # autosc-mws_2025-09-20, Ubuntu 24.04
+# ami                     = "ami-0eafb2a149534a110"  # autosc-mws_2025-09-20, Ubuntu 24.04
 # key_name                = "support_nomad_dev-access-key-mikael"  # US-EAST-1
 key_name                = "support-nomad-dev-oregon-mws"  # US-WEST-2
 owner_name              = "Mikael Sikora"

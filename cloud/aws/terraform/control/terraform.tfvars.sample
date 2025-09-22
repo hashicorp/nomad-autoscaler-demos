@@ -1,6 +1,6 @@
 region             = "us-west-2"
 availability_zones = ["us-west-2a"]
-ami                = "ami-0bd21458ecf89f85e"
+# ami              = "ami-0bd21458ecf89f85e"  # Optional: specify existing AMI or leave empty to build automatically
 key_name           = "my-dev-ec2-keypair"
 owner_name         = "alovelace"
 owner_email        = "alovelace@example.com"

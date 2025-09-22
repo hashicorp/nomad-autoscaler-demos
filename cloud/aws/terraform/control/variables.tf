@@ -94,9 +94,9 @@ variable "consul_binary" {
 }
 
 variable "allowlist_ip" {
-  description = "A list of IP address to grant access via the LBs."
+  description = "A list of IP address to grant access via the LBs. If empty, defaults to your current IP."
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = []
 }
 
 variable "nomad_autoscaler_image" {

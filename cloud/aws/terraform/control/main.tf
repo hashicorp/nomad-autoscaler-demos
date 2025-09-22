@@ -45,7 +45,7 @@ module "hashistack_cluster" {
   owner_name            = var.owner_name
   owner_email           = var.owner_email
   stack_name            = var.stack_name
-  allowlist_ip          = ["${module.my_ip_address.stdout}/32"]
+  allowlist_ip          = length(var.allowlist_ip) > 0 ? var.allowlist_ip : ["${module.my_ip_address.stdout}/32"]
   server_instance_type  = var.server_instance_type
   client_instance_type  = var.client_instance_type
   server_count          = var.server_count

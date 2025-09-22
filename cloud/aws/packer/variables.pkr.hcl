@@ -13,9 +13,29 @@ variable "os"            { default = "Ubuntu" }
 variable "os_version"    { default = "24.04" }
 variable "os_name"       { default = "noble" }
 
-# assign variables from environment variables
-variable "cni_version"    { default = env("CNIVERSION") }
-variable "consul_template_version" { default = env("CONSULTEMPLATEVERSION") }
-variable "consul_version" { default = env("CONSULVERSION") }
-variable "nomad_version"  { default = env("NOMADVERSION") }
-variable "vault_version"  { default = env("VAULTVERSION") }
+# Input variables for version management with hybrid fallback system
+variable "cni_version" { 
+  description = "CNI plugins version. If empty, will use environment variable or default"
+  type        = string
+  default     = env("CNIVERSION") != "" ? env("CNIVERSION") : "v1.8.0"
+}
+variable "consul_template_version" { 
+  description = "Consul Template version. If empty, will use environment variable or default"
+  type        = string
+  default     = env("CONSULTEMPLATEVERSION") != "" ? env("CONSULTEMPLATEVERSION") : "0.41.2"
+}
+variable "consul_version" { 
+  description = "Consul version. If empty, will use environment variable or default"
+  type        = string
+  default     = env("CONSULVERSION") != "" ? env("CONSULVERSION") : "1.21.4"
+}
+variable "nomad_version" { 
+  description = "Nomad version. If empty, will use environment variable or default"
+  type        = string
+  default     = env("NOMADVERSION") != "" ? env("NOMADVERSION") : "1.10.5"
+}
+variable "vault_version" { 
+  description = "Vault version. If empty, will use environment variable or default"
+  type        = string
+  default     = env("VAULTVERSION") != "" ? env("VAULTVERSION") : "1.20.3"
+}

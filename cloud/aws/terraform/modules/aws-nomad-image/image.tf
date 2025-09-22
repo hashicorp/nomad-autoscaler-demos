@@ -1,8 +1,43 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+# Check if the specified AMI exists using external data source
+data "external" "ami_check" {
+  count = var.ami_id != "" ? 1 : 0
+  
+  program = ["bash", "-c", <<-EOT
+    if aws ec2 describe-images --image-ids ${var.ami_id} --region ${var.region} --owners self >/dev/null 2>&1; then
+      echo '{"exists": "true"}'
+    else
+      echo '{"exists": "false"}'
+    fi
+  EOT
+  ]
+}
+
 locals {
-  build_image = var.ami_id == ""
+  # Check if we need to build an image:
+  # - If no ami_id is provided (empty string)
+  # - If ami_id is provided but the AMI doesn't exist
+  ami_exists  = var.ami_id != "" && length(data.external.ami_check) > 0 && data.external.ami_check[0].result.exists == "true"
+  build_image = var.ami_id == "" || !local.ami_exists
+}
+
+# Try to find existing AMI if ami_id is provided and it exists
+data "aws_ami" "existing" {
+  count = local.ami_exists ? 1 : 0
+
+  owners      = ["self"]
+  most_recent = true
+
+  filter {
+    name   = "image-id"
+    values = [var.ami_id]
+  }
+}
+
+locals {
+  # Select the appropriate image based on whether we built it or found an existing one
   image       = local.build_image ? data.aws_ami.built[0] : data.aws_ami.existing[0]
   image_id    = local.image.id
   snapshot_id = [for b in local.image.block_device_mappings : lookup(b.ebs, "snapshot_id", "")][0]
@@ -51,17 +86,5 @@ data "aws_ami" "built" {
   filter {
     name   = "name"
     values = ["${var.stack_name}-*"]
-  }
-}
-
-data "aws_ami" "existing" {
-  count = local.build_image ? 0 : 1
-
-  owners      = ["self"]
-  most_recent = true
-
-  filter {
-    name   = "image-id"
-    values = [var.ami_id]
   }
 }

@@ -1,4 +1,4 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright IBM Corp. 2020, 2024
 # SPDX-License-Identifier: MPL-2.0
 
 resource "google_compute_firewall" "nomad_consul_generic" {

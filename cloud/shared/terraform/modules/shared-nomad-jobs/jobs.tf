@@ -1,4 +1,4 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright IBM Corp. 2020, 2024
 # SPDX-License-Identifier: MPL-2.0
 
 resource "null_resource" "wait_for_nomad_api" {

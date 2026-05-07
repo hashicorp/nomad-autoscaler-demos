@@ -94,7 +94,7 @@ EOH
 
       resources {
         cpu    = 100
-        memory = 64
+        memory = 512
       }
 
       service {

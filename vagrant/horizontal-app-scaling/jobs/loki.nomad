@@ -15,7 +15,7 @@ job "loki" {
       driver = "docker"
 
       config {
-        image = "grafana/loki:2.6.1"
+        image = "grafana/loki:3.5.5"
         ports = ["loki"]
 
         args = [
@@ -33,36 +33,37 @@ job "loki" {
 auth_enabled: false
 server:
   http_listen_port: {{ env "NOMAD_PORT_loki" }}
+common:
+  ring:
+    kvstore:
+      store: inmemory
+    instance_addr: 127.0.0.1
+  replication_factor: 1
+  path_prefix: /loki
 ingester:
-  lifecycler:
-    address: 127.0.0.1
-    ring:
-      kvstore:
-        store: inmemory
-      replication_factor: 1
-    final_sleep: 0s
   chunk_idle_period: 5m
   chunk_retain_period: 30s
   wal:
     dir: /loki/wal
 schema_config:
   configs:
-  - from: 2020-05-15
-    store: boltdb
+  - from: 2024-01-01
+    store: tsdb
     object_store: filesystem
-    schema: v11
+    schema: v13
     index:
       prefix: index_
-      period: 168h
+      period: 24h
 storage_config:
-  boltdb:
-    directory: /loki/index
+  tsdb_shipper:
+    active_index_directory: /loki/tsdb-index
+    cache_location: /loki/tsdb-cache
   filesystem:
     directory: /loki/chunks
 limits_config:
-  enforce_metric_name: false
   reject_old_samples: true
   reject_old_samples_max_age: 168h
+  allow_structured_metadata: false
 EOH
 
         change_mode   = "signal"

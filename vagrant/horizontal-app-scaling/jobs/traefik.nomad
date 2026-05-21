@@ -1,4 +1,4 @@
-# Copyright IBM Corp. 2020, 2024
+# Copyright IBM Corp. 2020, 2026
 # SPDX-License-Identifier: MPL-2.0
 
 job "traefik" {
@@ -41,7 +41,7 @@ job "traefik" {
     task "server" {
       driver = "docker"
       config {
-        image        = "traefik:v2.9.1"
+        image        = "traefik:v3.5.3"
         ports        = ["admin", "grafana", "prometheus", "webapp"]
         network_mode = "host"
         args = [

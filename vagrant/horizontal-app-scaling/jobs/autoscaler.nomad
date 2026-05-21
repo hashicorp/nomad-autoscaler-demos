@@ -1,4 +1,4 @@
-# Copyright IBM Corp. 2020, 2024
+# Copyright IBM Corp. 2020, 2026
 # SPDX-License-Identifier: MPL-2.0
 
 job "autoscaler" {
@@ -18,7 +18,7 @@ job "autoscaler" {
       driver = "docker"
 
       config {
-        image   = "hashicorp/nomad-autoscaler:0.3.7"
+        image   = "hashicorp/nomad-autoscaler:0.5.0"
         command = "nomad-autoscaler"
         ports   = ["http"]
 
@@ -42,7 +42,7 @@ job "autoscaler" {
       # }
       #
       # artifact {
-      #   source      = "https://releases.hashicorp.com/nomad-autoscaler/0.3.7/nomad-autoscaler_0.3.7_linux_amd64.zip"
+      #   source      = "https://releases.hashicorp.com/nomad-autoscaler/0.5.0/nomad-autoscaler_0.5.0_linux_amd64.zip"
       #   destination = "/usr/local/bin"
       # }
 
@@ -100,7 +100,7 @@ strategy "target-value" {
       }
 
       config {
-        image = "grafana/promtail:2.6.1"
+        image = "grafana/promtail:3.5.5"
         ports = ["promtail"]
 
         args = [
@@ -119,7 +119,7 @@ positions:
   filename: /tmp/positions.yaml
 
 client:
-  url: http://{{ range $i, $s := nomadService "loki" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}/api/prom/push
+  url: http://{{ range $i, $s := nomadService "loki" }}{{ if eq $i 0 }}{{.Address}}:{{.Port}}{{end}}{{end}}/loki/api/v1/push
 
 scrape_configs:
 - job_name: system

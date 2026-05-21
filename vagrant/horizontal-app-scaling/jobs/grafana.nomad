@@ -1,4 +1,4 @@
-# Copyright IBM Corp. 2020, 2024
+# Copyright IBM Corp. 2020, 2026
 # SPDX-License-Identifier: MPL-2.0
 
 job "grafana" {
@@ -20,7 +20,7 @@ job "grafana" {
       driver = "docker"
 
       config {
-        image = "grafana/grafana:9.2.0"
+        image = "grafana/grafana:11.6.3"
         ports = ["grafana_ui"]
 
         volumes = [
@@ -94,7 +94,7 @@ EOH
 
       resources {
         cpu    = 100
-        memory = 64
+        memory = 512
       }
 
       service {

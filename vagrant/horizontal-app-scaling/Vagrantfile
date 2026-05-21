@@ -41,8 +41,8 @@ Vagrant.configure("2") do |config|
       zip
 
     # Download and install Docker.
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
-    echo "deb [signed-by=/usr/share/keyrings/docker.gpg arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker.gpg
+    echo "deb [signed-by=/usr/share/keyrings/docker.gpg arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     apt-get update
     apt-get install -y \
       docker-ce \
@@ -52,8 +52,8 @@ Vagrant.configure("2") do |config|
     usermod -aG docker vagrant
 
     # Download and install Nomad.
-    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp.gpg
-    echo "deb [signed-by=/usr/share/keyrings/hashicorp.gpg arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/hashicorp.gpg
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp.gpg arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
     apt-get update
     apt-get install -y \
       nomad
@@ -73,9 +73,17 @@ Vagrant.configure("2") do |config|
     # Copy across the config files.
     cp /home/vagrant/nomad-autoscaler/files/nomad.hcl /etc/nomad.d/
 
+    # On ARM64, Nomad cannot auto-detect CPU speed and reports cpu.totalcompute=0,
+    # preventing scheduling of any CPU-requesting jobs. Copy an overlay config
+    # only on aarch64 VMs; Nomad merges all .hcl files in /etc/nomad.d/.
+    rm -f /etc/nomad.d/nomad-arm64.hcl
+    if [ "$(uname -m)" = "aarch64" ]; then
+      cp /home/vagrant/nomad-autoscaler/files/nomad-arm64.hcl /etc/nomad.d/
+    fi
+
     # Enable and start the daemons
     sudo systemctl enable nomad
-    sudo systemctl start nomad
+    sudo systemctl restart nomad
   SHELL
 
 end

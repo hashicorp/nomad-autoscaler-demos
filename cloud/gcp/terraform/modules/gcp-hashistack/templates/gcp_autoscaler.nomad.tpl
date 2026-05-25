@@ -2,7 +2,7 @@ job "autoscaler" {
   datacenters = ["dc1"]
 
   group "autoscaler" {
-    count = 1
+    count = 2
 
     network {
       port "http" {}
@@ -34,6 +34,10 @@ job "autoscaler" {
         data = <<EOF
 nomad {
   address = "http://{{env "attr.unique.network.ip-address" }}:4646"
+}
+
+high_availability {
+  enabled = true
 }
 
 apm "prometheus" {

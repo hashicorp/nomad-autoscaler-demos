@@ -10,6 +10,10 @@ job "webapp" {
     network {
       port "webapp_http" {}
       port "toxiproxy_webapp" {}
+      # Toxiproxy's admin API. We let Nomad assign a port instead of using the
+      # default 8474 so that multiple allocations can run on the same host
+      # under network_mode = "host" without colliding.
+      port "toxiproxy_admin" {}
     }
 
     scaling {
@@ -50,6 +54,17 @@ job "webapp" {
       }
     }
 
+    # Toxiproxy is split into two prestart tasks:
+    #   1. "toxiproxy" runs the server (sidecar=true) so it stays up for the
+    #      lifetime of the webapp task.
+    #   2. "toxiproxy-setup" downloads the toxiproxy CLI and configures the
+    #      proxy + latency toxic, then exits (sidecar=false).
+    #
+    # The current ghcr.io/shopify/toxiproxy image is built FROM scratch, so it
+    # has no shell and no toxiproxy-cli binary inside the container; the setup
+    # work is therefore done from a sibling exec task that fetches the CLI via
+    # an artifact block. network_mode = "host" on the docker task lets the exec
+    # sibling reach the toxiproxy admin API on localhost:8474.
     task "toxiproxy" {
       driver = "docker"
 
@@ -59,35 +74,13 @@ job "webapp" {
       }
 
       config {
-        image      = "shopify/toxiproxy:2.1.4"
-        entrypoint = ["/entrypoint.sh"]
-        ports      = ["toxiproxy_webapp"]
-
-        volumes = [
-          "local/entrypoint.sh:/entrypoint.sh",
+        image        = "ghcr.io/shopify/toxiproxy:2.12.0"
+        ports        = ["toxiproxy_webapp", "toxiproxy_admin"]
+        network_mode = "host"
+        args = [
+          "-host=0.0.0.0",
+          "-port=${NOMAD_PORT_toxiproxy_admin}",
         ]
-      }
-
-      template {
-        data = <<EOH
-#!/bin/sh
-
-set -ex
-
-/go/bin/toxiproxy -host 0.0.0.0  &
-
-while ! wget --spider -q http://localhost:8474/version; do
-  echo "toxiproxy not ready yet"
-  sleep 0.2
-done
-
-/go/bin/toxiproxy-cli create webapp -l 0.0.0.0:${NOMAD_PORT_toxiproxy_webapp} -u ${NOMAD_ADDR_webapp_http}
-/go/bin/toxiproxy-cli toxic add -n latency -t latency -a latency=1000 -a jitter=500 webapp
-tail -f /dev/null
-        EOH
-
-        destination = "local/entrypoint.sh"
-        perms       = "755"
       }
 
       resources {
@@ -112,6 +105,54 @@ tail -f /dev/null
           timeout        = "3s"
           initial_status = "passing"
         }
+      }
+    }
+
+    task "toxiproxy-setup" {
+      driver = "exec"
+
+      lifecycle {
+        hook    = "prestart"
+        sidecar = false
+      }
+
+      # Multi-arch: ${attr.cpu.arch} is "amd64" or "arm64", which matches the
+      # filename suffix used by upstream toxiproxy releases.
+      artifact {
+        source      = "https://github.com/Shopify/toxiproxy/releases/download/v2.12.0/toxiproxy-cli-linux-${attr.cpu.arch}"
+        destination = "local/toxiproxy-cli"
+        mode        = "file"
+      }
+
+      template {
+        data = <<EOH
+#!/bin/sh
+set -e
+
+chmod +x local/toxiproxy-cli
+
+export TOXIPROXY_URL=http://localhost:{{ env "NOMAD_PORT_toxiproxy_admin" }}
+
+until local/toxiproxy-cli list > /dev/null 2>&1; do
+  echo "waiting for toxiproxy server..."
+  sleep 0.2
+done
+
+local/toxiproxy-cli create -l 0.0.0.0:{{ env "NOMAD_PORT_toxiproxy_webapp" }} -u {{ env "NOMAD_ADDR_webapp_http" }} webapp
+local/toxiproxy-cli toxic add -n latency -t latency -a latency=1000 -a jitter=500 webapp
+        EOH
+
+        destination = "local/setup.sh"
+        perms       = "755"
+      }
+
+      config {
+        command = "local/setup.sh"
+      }
+
+      resources {
+        cpu    = 50
+        memory = 32
       }
     }
   }

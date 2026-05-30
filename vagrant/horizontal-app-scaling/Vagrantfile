@@ -73,11 +73,13 @@ Vagrant.configure("2") do |config|
     # Copy across the config files.
     cp /home/vagrant/nomad-autoscaler/files/nomad.hcl /etc/nomad.d/
 
-    # On ARM64, Nomad cannot auto-detect CPU speed and reports cpu.totalcompute=0,
-    # preventing scheduling of any CPU-requesting jobs. Copy an overlay config
-    # only on aarch64 VMs; Nomad merges all .hcl files in /etc/nomad.d/.
+    # Nomad uses gopsutil to read "cpu MHz" from /proc/cpuinfo to compute
+    # cpu.totalcompute. Some hypervisors (notably VirtualBox on macOS ARM64)
+    # do not expose CPU frequency there; Nomad then reports 0 MHz and cannot
+    # schedule any CPU-requesting jobs. Guard on the missing entry directly —
+    # this is correct for all architectures and hypervisors.
     rm -f /etc/nomad.d/nomad-arm64.hcl
-    if [ "$(uname -m)" = "aarch64" ]; then
+    if ! grep -q "^cpu MHz" /proc/cpuinfo; then
       cp /home/vagrant/nomad-autoscaler/files/nomad-arm64.hcl /etc/nomad.d/
     fi
 

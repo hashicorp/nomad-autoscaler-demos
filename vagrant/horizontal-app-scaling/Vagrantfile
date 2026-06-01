@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/jammy64"
+  config.vm.box = "bento/ubuntu-22.04"
 
   # Expose ports to the host.
   config.vm.network "forwarded_port", guest: 3000, host: 3000, host_ip: "127.0.0.1"    # Grafana
@@ -41,8 +41,8 @@ Vagrant.configure("2") do |config|
       zip
 
     # Download and install Docker.
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
-    echo "deb [signed-by=/usr/share/keyrings/docker.gpg arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker.gpg
+    echo "deb [signed-by=/usr/share/keyrings/docker.gpg arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     apt-get update
     apt-get install -y \
       docker-ce \
@@ -52,8 +52,8 @@ Vagrant.configure("2") do |config|
     usermod -aG docker vagrant
 
     # Download and install Nomad.
-    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp.gpg
-    echo "deb [signed-by=/usr/share/keyrings/hashicorp.gpg arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/hashicorp.gpg
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp.gpg arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
     apt-get update
     apt-get install -y \
       nomad
@@ -73,9 +73,19 @@ Vagrant.configure("2") do |config|
     # Copy across the config files.
     cp /home/vagrant/nomad-autoscaler/files/nomad.hcl /etc/nomad.d/
 
+    # Nomad uses gopsutil to read "cpu MHz" from /proc/cpuinfo to compute
+    # cpu.totalcompute. Some hypervisors (notably VirtualBox on macOS ARM64)
+    # do not expose CPU frequency there; Nomad then reports 0 MHz and cannot
+    # schedule any CPU-requesting jobs. Guard on the missing entry directly —
+    # this is correct for all architectures and hypervisors.
+    rm -f /etc/nomad.d/nomad-arm64.hcl
+    if ! grep -q "^cpu MHz" /proc/cpuinfo; then
+      cp /home/vagrant/nomad-autoscaler/files/nomad-arm64.hcl /etc/nomad.d/
+    fi
+
     # Enable and start the daemons
     sudo systemctl enable nomad
-    sudo systemctl start nomad
+    sudo systemctl restart nomad
   SHELL
 
 end

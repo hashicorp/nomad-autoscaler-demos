@@ -14,9 +14,9 @@ source "azure-arm" "hashistack" {
   }
   client_id                         = "${var.client_id}"
   client_secret                     = "${var.client_secret}"
-  image_offer                       = "UbuntuServer"
+  image_offer                       = "0001-com-ubuntu-server-jammy"
   image_publisher                   = "Canonical"
-  image_sku                         = "18.04-LTS"
+  image_sku                         = "22_04-lts"
   location                          = "${var.location}"
   managed_image_name                = "${var.image_name}"
   managed_image_resource_group_name = "${var.resource_group}"

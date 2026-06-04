@@ -78,9 +78,9 @@ Vagrant.configure("2") do |config|
 
     # Enable and start the daemons
     systemctl enable consul
-    systemctl start consul
+    systemctl restart consul
     sudo systemctl enable nomad
-    sudo systemctl start nomad
+    sudo systemctl restart nomad
   SHELL
 
 end

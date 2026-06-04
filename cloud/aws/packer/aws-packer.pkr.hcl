@@ -13,7 +13,7 @@ source "amazon-ebs" "hashistack" {
   source_ami_filter {
     filters = {
       virtualization-type = "hvm"
-      name                = "ubuntu/images/*ubuntu-focal-20.04-amd64-server-*"
+      name                = "ubuntu/images/*ubuntu-jammy-22.04-amd64-server-*"
       root-device-type    = "ebs"
     }
     owners      = ["099720109477"] # Canonical's owner ID
@@ -25,7 +25,7 @@ source "amazon-ebs" "hashistack" {
 
   tags = {
     OS_Version    = "Ubuntu"
-    Release       = "20.04"
+    Release       = "22.04"
     Architecture  = "amd64"
     Created_Email = var.created_email
     Created_Name  = var.created_name

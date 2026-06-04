@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/focal64"
+  config.vm.box = "bento/ubuntu-22.04"
 
   # Expose ports to the host.
   config.vm.network "forwarded_port", guest: 4646, host: 4646, host_ip: "127.0.0.1" # Nomad HTTP API/UI

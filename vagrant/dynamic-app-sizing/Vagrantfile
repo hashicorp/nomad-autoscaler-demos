@@ -69,12 +69,14 @@ Vagrant.configure("2") do |config|
     # Pass the Nomad Enterprise license to the systemd service via a drop-in,
     # reading it from the NOMAD_LICENSE env var exported on the host before
     # running `vagrant up`.
-    if [ -n "$NOMAD_LICENSE" ]; then
-      mkdir -p /etc/systemd/system/nomad.service.d
-      printf '[Service]\nEnvironment="NOMAD_LICENSE=%s"\n' "$NOMAD_LICENSE" \
-        > /etc/systemd/system/nomad.service.d/license.conf
-      systemctl daemon-reload
+    if [ -z "$NOMAD_LICENSE" ]; then
+      echo "ERROR: NOMAD_LICENSE is not set. Export your Nomad Enterprise license on the host before running vagrant up."
+      exit 1
     fi
+    mkdir -p /etc/systemd/system/nomad.service.d
+    printf '[Service]\nEnvironment="NOMAD_LICENSE=%s"\n' "$NOMAD_LICENSE" \
+      > /etc/systemd/system/nomad.service.d/license.conf
+    systemctl daemon-reload
 
     # Enable and start the daemons
     systemctl enable consul

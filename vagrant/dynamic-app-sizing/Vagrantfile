@@ -32,11 +32,8 @@ Vagrant.configure("2") do |config|
       apt-transport-https \
       ca-certificates \
       curl \
-      gnupg-agent \
       jq \
-      redis-server \
-      software-properties-common \
-      zip
+      software-properties-common
 
     # Download and install Docker.
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker.gpg
@@ -62,14 +59,6 @@ Vagrant.configure("2") do |config|
   #   - Create daemons for Nomad and Consul
   # Runs everytime the VM starts.
   config.vm.provision "app:setup", type: "shell", run: "always", inline: <<-SHELL
-    # Configure the Nomad and Consul daemons.
-    pushd /home/vagrant/nomad-autoscaler-shared
-    for t in consul nomad; do
-      cp ${t}.service /etc/systemd/system/
-      mkdir -p /etc/${t}.d
-    done
-    popd
-
     # Copy across the config files.
     cp /home/vagrant/nomad-autoscaler-shared/consul.hcl /etc/consul.d/
     cp /home/vagrant/nomad-autoscaler/files/nomad.hcl /etc/nomad.d/

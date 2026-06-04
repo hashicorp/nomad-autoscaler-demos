@@ -51,17 +51,29 @@ Vagrant.configure("2") do |config|
     echo "deb [signed-by=/usr/share/keyrings/hashicorp.gpg arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
     apt-get update
     apt-get install -y \
-      nomad \
+      nomad-enterprise \
       consul
   SHELL
 
   # Setup demo dependencies.
   #   - Create daemons for Nomad and Consul
   # Runs everytime the VM starts.
-  config.vm.provision "app:setup", type: "shell", run: "always", inline: <<-SHELL
+  config.vm.provision "app:setup", type: "shell", run: "always",
+    env: {"NOMAD_LICENSE" => ENV.fetch("NOMAD_LICENSE", "")},
+    inline: <<-SHELL
     # Copy across the config files.
     cp /home/vagrant/nomad-autoscaler-shared/consul.hcl /etc/consul.d/
     cp /home/vagrant/nomad-autoscaler/files/nomad.hcl /etc/nomad.d/
+
+    # Pass the Nomad Enterprise license to the systemd service via a drop-in,
+    # reading it from the NOMAD_LICENSE env var exported on the host before
+    # running `vagrant up`.
+    if [ -n "$NOMAD_LICENSE" ]; then
+      mkdir -p /etc/systemd/system/nomad.service.d
+      printf '[Service]\nEnvironment="NOMAD_LICENSE=%s"\n' "$NOMAD_LICENSE" \
+        > /etc/systemd/system/nomad.service.d/license.conf
+      systemctl daemon-reload
+    fi
 
     # Enable and start the daemons
     systemctl enable consul

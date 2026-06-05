@@ -3,14 +3,14 @@
 
 variable "project_id" {}
 variable "image_name" { default = "hashistack" }
-variable "source_image" { default = "ubuntu-2004-focal-v20200720" }
+variable "source_image_family" { default = "ubuntu-2204-lts" }
 variable "ssh_username" { default = "ubuntu" }
 variable "zone" { default = "us-central1-a" }
 
 source "googlecompute" "hashistack" {
   image_name   = "${var.image_name}"
   project_id   = "${var.project_id}"
-  source_image = "${var.source_image}"
+  source_image_family = "${var.source_image_family}"
   ssh_username = "${var.ssh_username}"
   zone         = "${var.zone}"
 }

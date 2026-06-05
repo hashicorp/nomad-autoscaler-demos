@@ -83,5 +83,5 @@ sudo mv /etc/resolv.conf.new /etc/resolv.conf
 echo "export CONSUL_RPC_ADDR=$IP_ADDRESS:8400" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export CONSUL_HTTP_ADDR=$IP_ADDRESS:8500" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export NOMAD_ADDR=http://$IP_ADDRESS:4646" | sudo tee --append /home/$HOME_DIR/.bashrc
-echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre"  | sudo tee --append /home/$HOME_DIR/.bashrc
+echo "export JAVA_HOME=$(readlink -f /usr/bin/java | sed 's:bin/java::')"  | sudo tee --append /home/$HOME_DIR/.bashrc
 

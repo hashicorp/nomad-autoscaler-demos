@@ -93,4 +93,4 @@ sudo mv /etc/resolv.conf.new /etc/resolv.conf
 # Set env vars for tool CLIs
 echo "export VAULT_ADDR=http://$IP_ADDRESS:8200" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export NOMAD_ADDR=http://$IP_ADDRESS:4646" | sudo tee --append /home/$HOME_DIR/.bashrc
-echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre"  | sudo tee --append /home/$HOME_DIR/.bashrc
+echo "export JAVA_HOME=$(readlink -f /usr/bin/java | sed 's:bin/java::')"  | sudo tee --append /home/$HOME_DIR/.bashrc

@@ -43,7 +43,7 @@ sudo ufw disable || echo "ufw not installed"
 curl -sL -o consul.zip ${CONSULDOWNLOAD}
 
 ## Install
-sudo unzip -o consul.zip -d /usr/local/bin
+sudo unzip -o consul.zip consul -d /usr/local/bin
 sudo chmod 0755 /usr/local/bin/consul
 sudo chown root:root /usr/local/bin/consul
 
@@ -57,7 +57,7 @@ sudo chmod 755 ${CONSULDIR}
 curl -sL -o nomad.zip ${NOMADDOWNLOAD}
 
 ## Install
-sudo unzip -o nomad.zip -d /usr/local/bin
+sudo unzip -o nomad.zip nomad -d /usr/local/bin
 sudo chmod 0755 /usr/local/bin/nomad
 sudo chown root:root /usr/local/bin/nomad
 
@@ -68,17 +68,14 @@ sudo mkdir -p ${NOMADDIR}
 sudo chmod 755 ${NOMADDIR}
 
 # Docker
-distro=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
 sudo apt-get install -y apt-transport-https ca-certificates gnupg2
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/${distro} $(lsb_release -cs) stable"
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker.gpg
+echo "deb [signed-by=/usr/share/keyrings/docker.gpg arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install -y docker-ce
 
 # Java
-sudo add-apt-repository -y ppa:openjdk-r/ppa
-sudo apt-get update
-sudo apt-get install -y openjdk-8-jdk
+sudo apt-get install -y openjdk-11-jdk
 JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 
 # CNI plugins

@@ -26,7 +26,7 @@ RETRY_JOIN=$3
 ## Replace existing Consul binary if remote file exists
 if [[ `wget -S --spider $CONSUL_BINARY  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
   curl -L $CONSUL_BINARY > consul.zip
-  sudo unzip -o consul.zip -d /usr/local/bin
+  sudo unzip -o consul.zip consul -d /usr/local/bin
   sudo chmod 0755 /usr/local/bin/consul
   sudo chown root:root /usr/local/bin/consul
 fi
@@ -47,7 +47,7 @@ export CONSUL_RPC_ADDR=$IP_ADDRESS:8400
 ## Replace existing Nomad binary if remote file exists
 if [[ `wget -S --spider $NOMAD_BINARY  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
   curl -L $NOMAD_BINARY > nomad.zip
-  sudo unzip -o nomad.zip -d /usr/local/bin
+  sudo unzip -o nomad.zip nomad -d /usr/local/bin
   sudo chmod 0755 /usr/local/bin/nomad
   sudo chown root:root /usr/local/bin/nomad
 fi
@@ -83,5 +83,5 @@ sudo mv /etc/resolv.conf.new /etc/resolv.conf
 echo "export CONSUL_RPC_ADDR=$IP_ADDRESS:8400" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export CONSUL_HTTP_ADDR=$IP_ADDRESS:8500" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export NOMAD_ADDR=http://$IP_ADDRESS:4646" | sudo tee --append /home/$HOME_DIR/.bashrc
-echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre"  | sudo tee --append /home/$HOME_DIR/.bashrc
+echo "export JAVA_HOME=$(readlink -f /usr/bin/java | sed 's:/bin/java::')"  | sudo tee --append /home/$HOME_DIR/.bashrc
 
